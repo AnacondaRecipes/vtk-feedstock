@@ -50,6 +50,7 @@ cmake -H. -Bbuild -G"Ninja" \
     -DVTK_USE_SYSTEM_NETCDF:BOOL=ON \
     -DVTK_USE_SYSTEM_LZ4:BOOL=ON \
     -DVTK_USE_SYSTEM_OGGTHEORA:BOOL=ON \
+    -DModule_vtkIOXdmf2:INTERNAL=ON \
     "${SCREEN_ARGS[@]}" \
     "${CMAKE_PLATFORM_FLAGS[@]}" \
     "${WITH_OSMESA[@]}"
