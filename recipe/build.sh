@@ -7,6 +7,10 @@ if [[ ${target_platform} =~ .*linux.* ]]; then
   CMAKE_PLATFORM_FLAGS+=(-DCMAKE_FIND_ROOT_PATH="${PREFIX};${BUILD_PREFIX}/${HOST}/sysroot")
   CMAKE_PLATFORM_FLAGS+=(-DCMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES:PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/include")
   CMAKE_PLATFORM_FLAGS+=(-DVTK_USE_X:BOOL=ON)
+
+  # Default to GCC <10 behavior to avoid `multiple definition' linker errors
+  CFLAGS="${CFLAGS} -fcommon"
+  CXXFLAGS="${CXXFLAGS} -fcommon"
 elif [[ ${target_platform} == osx-64 ]]; then
   CMAKE_PLATFORM_FLAGS+=(-DVTK_USE_X:BOOL=OFF)
   CMAKE_PLATFORM_FLAGS+=(-DVTK_USE_COCOA:BOOL=ON)
@@ -50,7 +54,8 @@ cmake -H. -Bbuild -G"Ninja" \
     -DVTK_SMP_IMPLEMENTATION_TYPE:STRING=TBB \
     -DVTK_USE_SYSTEM_NETCDF:BOOL=ON \
     -DVTK_USE_SYSTEM_LZ4:BOOL=ON \
-    -DVTK_USE_SYSTEM_OGGTHEORA:BOOL=ON \
+    -DVTK_USE_SYSTEM_OGG:BOOL=ON \
+    -DVTK_USE_SYSTEM_THEORA:BOOL=ON \
     -DModule_vtkIOXdmf2:INTERNAL=ON \
     "${SCREEN_ARGS[@]}" \
     "${CMAKE_PLATFORM_FLAGS[@]}" \

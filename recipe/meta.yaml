@@ -22,6 +22,8 @@ build:
   number: {{ build_number }}
   features:
     - mesalib   # [VTK_WITH_OSMESA]
+  ignore_run_exports:
+    - libogg    # seems required to enable OGG support, but not actually linked to?
 
 requirements:
   build:
@@ -34,7 +36,7 @@ requirements:
     - cmake
     - ninja
     - {{ compiler('cxx') }}
-      {% if SUBDIR in ('linux-64', 'linux-32', 'linux-ppc64le') %}
+  {% if SUBDIR in ('linux-64', 'linux-32', 'linux-ppc64le', 'linux-aarch64') %}
     - {{ cdt('libxcb') }}
     - {{ cdt('libxau') }}
     - {{ cdt('libxau') }}
@@ -56,7 +58,10 @@ requirements:
     - python
     # VTK Third Party dependencies
     - zlib
-    - freetype
+    # Limit freetype version to avoid compile errors triggered by freetype
+    # >=2.10.3 no longer exporting `FT_CALLBACK_DEF`; for details, see:
+    # <https://gitlab.kitware.com/vtk/vtk/-/issues/18033>
+    - freetype <2.10.3
     - hdf5     # [unix]
     - libxml2
     - libpng
@@ -64,8 +69,13 @@ requirements:
     - libtiff
     - jsoncpp
     - expat
-    - tbb
-    - tbb-devel
+    # Limit TBB version. The oneAPI (2021.*) release removed the `tbb_stddef.h`
+    # header, which causes configure-time errors. The 2020 release is probably
+    # safe to use but generates *tons* of deprecation warnings that (may) hint
+    # at subtle breaks. Given all that, we set the limit to the latest version
+    # available when VTK 8.2 was released.
+    - tbb <=2019
+    - tbb-devel <=2019
     - mesalib   # [VTK_WITH_OSMESA]
     - libnetcdf
     - lz4-c
@@ -77,8 +87,10 @@ requirements:
     # VTK Third Party dependencies
     - mesalib   # [VTK_WITH_OSMESA]
     - jsoncpp
-    - tbb
-    - {{ pin_compatible('libogg') }}  # [unix]
+    # Upper bound set by the version we built with above; TBB 2021.0 removed
+    # the needed `libtbb.so.2` DSO, and (may have) introduced API and/or ABI
+    # compatibilities.
+    - tbb <2021.0.0a0
     # Rest will be taken care of by run_exports
 
 test:

@@ -12,35 +12,31 @@ diff --git a/Rendering/Matplotlib/module.cmake b/Rendering/Matplotlib/module.cma
 index 042b6d5..2da4189 100644
 --- a/Rendering/Matplotlib/module.cmake
 +++ b/Rendering/Matplotlib/module.cmake
-@@ -28,7 +28,9 @@ vtk_module(vtkRenderingMatplotlib
+@@ -26,7 +26,9 @@ vtk_module(vtkRenderingMatplotlib
      vtkCommonDataModel
      vtkCommonTransforms
      vtkImagingCore
 -    vtkPython
      vtkRenderingCore
      vtkWrappingPythonCore
--  )
-\ No newline at end of file
 +  COMPILE_DEPENDS
 +    vtkPython
 +  OPTIONAL_PYTHON_LINK
-+  )
+   )
 diff --git a/Utilities/PythonInterpreter/module.cmake b/Utilities/PythonInterpreter/module.cmake
 index 2f0a661..43637d8 100644
 --- a/Utilities/PythonInterpreter/module.cmake
 +++ b/Utilities/PythonInterpreter/module.cmake
-@@ -3,7 +3,8 @@ vtk_module(vtkPythonInterpreter
-     vtkWrapping
+@@ -1,8 +1,9 @@
+ vtk_module(vtkPythonInterpreter
    DEPENDS
      vtkCommonCore
 -    vtkPython
      vtksys
 +  COMPILE_DEPENDS
 +    vtkPython
-   OPTIONAL_PYTHON_LINK
--)
-\ No newline at end of file
-+)
+   EXCLUDE_FROM_WRAPPING
+   PRIVATE_DEPENDS
+     vtkCommonMisc
 -- 
 1.7.1
-

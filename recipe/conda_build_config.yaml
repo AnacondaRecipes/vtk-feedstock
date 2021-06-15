@@ -1,2 +1,8 @@
 VTK_WITH_OSMESA:
 - False
+
+# VTK 8.x is not compatible with Python >=3.8; for details, see:
+# <https://gitlab.kitware.com/vtk/vtk/-/issues/17670>
+python:
+  - 3.6   # [linux and not aarch64]
+  - 3.7
