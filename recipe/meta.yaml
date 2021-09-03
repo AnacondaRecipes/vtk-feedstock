@@ -84,7 +84,7 @@ requirements:
     - loguru
     - sqlite
     - gl2ps
-    - qt   # [not (ppc64le or arm64 or s390x)]
+    - qt   # [not (ppc64le or s390x)]
   run:
     - python
     - zlib
