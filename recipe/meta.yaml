@@ -19,8 +19,16 @@ build:
   number: {{ build_number }}
   features:
     - mesalib   # [VTK_WITH_OSMESA]
+  missing_dso_whitelist:
+    - '*/ld-linux-*.so.*'
+    - '*/libc.so.*'
+    - '*/libdl.so.*'
+    - '*/libm.so.*'
+    - '*/libpthread.so.*'
   ignore_run_exports:
     - libogg    # seems required to enable OGG support, but not actually linked to?
+    - pugixml
+    - loguru
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
 
@@ -69,7 +77,6 @@ requirements:
     - mesalib   # [VTK_WITH_OSMESA]
     - libnetcdf
     - lz4-c
-    - xorg-libxt  # [linux]
     - boost-cpp
     - tk          # [not win and not VTK_WITH_OSMESA]
     - ffmpeg
@@ -85,6 +92,7 @@ requirements:
     - sqlite
     - gl2ps
     - qt   # [not (ppc64le or s390x)]
+    - xz
   run:
     - python
     - zlib
@@ -100,13 +108,11 @@ requirements:
     - mesalib   # [VTK_WITH_OSMESA]
     - libnetcdf
     - lz4-c
-    - xorg-libxt  # [linux]
     - tk  # [not win and not VTK_WITH_OSMESA]
     - ffmpeg
     - utfcpp
     - eigen
     - double-conversion
-    - pugixml
     - glew
     - libogg
     - libtheora
@@ -115,7 +121,7 @@ requirements:
     - sqlite
     - gl2ps
     - pugixml
-    - tbb-devel
+    - xz
 
   run_constrained:
     # Paraview bundles its own VTK that has conflicting Python vtkmodules
