@@ -25,6 +25,7 @@ build:
     - '*/libdl.so.*'
     - '*/libm.so.*'
     - '*/libpthread.so.*'
+    - '*/libvtk*.dylib'
   ignore_run_exports:
     - libogg    # seems required to enable OGG support, but not actually linked to?
     - pugixml
