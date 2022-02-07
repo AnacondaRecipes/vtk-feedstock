@@ -15,7 +15,7 @@ source:
   sha256: bc3eb9625b2b8dbfecb6052a2ab091fc91405de4333b0ec68f3323815154ed8a
 
 build:
-  skip: True  # [win and vc<14]
+  skip: True  # [win and vc<14 or s390x or ppc64le]
   number: {{ build_number }}
   features:
     - mesalib   # [VTK_WITH_OSMESA]
@@ -145,7 +145,7 @@ test:
     - vtk.vtkRenderingVolume
     - vtk.vtkInteractionWidgets
     - vtk.vtkWebGLExporter
-    - vtk.tk.vtkTkRenderWidget  # [not win and not VTK_WITH_OSMESA]
+    - vtk.tk.vtkTkRenderWidget  # [not win and not VTK_WITH_OSMESA and not osx]
     - vtkmodules
     - vtkmodules.vtkChartsCore
     - vtkmodules.vtkCommonCore
