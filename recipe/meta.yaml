@@ -167,6 +167,7 @@ test:
 
   requires:
     - setuptools
+    - python <3.10
 
 about:
   home: http://www.vtk.org/
