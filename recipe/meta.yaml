@@ -57,7 +57,7 @@ requirements:
     - {{ cdt('xorg-x11-proto-devel') }}
   {% endif %}
   host:
-    - python
+    - python <3.10
     # VTK Third Party dependencies
     - zlib
     - freetype
@@ -92,10 +92,10 @@ requirements:
     - loguru
     - sqlite
     - gl2ps
-    - qt   # [not (ppc64le or s390x)]
+    - qt =5  # [not (ppc64le or s390x)]
     - xz
   run:
-    - python
+    - python <3.10
     - zlib
     - freetype
     - hdf5
