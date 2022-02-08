@@ -22,6 +22,8 @@ def render_enabled():
     if sys.platform == 'linux' and not 'DISPLAY' in os.environ:
         return False
 
+    return True
+
 # If this fails it raises a DistributionNotFound exception
 pkg_resources.get_distribution('vtk')
 
