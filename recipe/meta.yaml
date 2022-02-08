@@ -92,7 +92,7 @@ requirements:
     - loguru
     - sqlite
     - gl2ps
-    - qt =5  # [not (ppc64le or s390x)]
+    - qt =5
     - xz
   run:
     - python <3.10
@@ -122,6 +122,7 @@ requirements:
     - sqlite
     - gl2ps
     - pugixml
+    - qt =5
     - xz
 
   run_constrained:
@@ -145,7 +146,7 @@ test:
     - vtk.vtkRenderingVolume
     - vtk.vtkInteractionWidgets
     - vtk.vtkWebGLExporter
-    - vtk.tk.vtkTkRenderWidget  # [not win and not VTK_WITH_OSMESA and not osx]
+    - vtk.tk.vtkTkRenderWidget  # [not (win or VTK_WITH_OSMESA or osx)]
     - vtkmodules
     - vtkmodules.vtkChartsCore
     - vtkmodules.vtkCommonCore
