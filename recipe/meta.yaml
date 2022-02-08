@@ -92,6 +92,8 @@ requirements:
     - loguru
     - sqlite
     - gl2ps
+    # We have an (experimental?) Qt 6.1 build available on osx-arm64,
+    # but for the sake of coherence, we pin to 5 across all variants.
     - qt =5
     - xz
   run:
@@ -122,7 +124,8 @@ requirements:
     - sqlite
     - gl2ps
     - pugixml
-    - qt =5
+    # Not all our Qt builds in distribution seem to export a pinning.
+    - {{ pin_compatible('qt') }}
     - xz
 
   run_constrained:
