@@ -27,7 +27,9 @@ renderer.AddActor(actor)
 window = vtk.vtkRenderWindow()
 window.AddRenderer(renderer)
 window.SetSize(500, 500)
-window.Render()
+
+# This fails in our headless builds :/
+# window.Render()
 
 window_filter = vtk.vtkWindowToImageFilter()
 window_filter.SetInput(window)
