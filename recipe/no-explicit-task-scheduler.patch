@@ -1,0 +1,30 @@
+diff -urN a/Common/Core/SMP/TBB/vtkSMPTools.cxx b/Common/Core/SMP/TBB/vtkSMPTools.cxx
+--- a/Common/Core/SMP/TBB/vtkSMPTools.cxx	2021-07-02 18:31:21.000000000 +0300
++++ b/Common/Core/SMP/TBB/vtkSMPTools.cxx	2022-02-15 12:10:50.959210305 +0300
+@@ -22,18 +22,13 @@
+ #define __TBB_NO_IMPLICIT_LINKAGE 1
+ #endif
+ 
+-#include <tbb/task_scheduler_init.h>
+-
+ #ifdef _MSC_VER
+ #pragma pop_macro("__TBB_NO_IMPLICIT_LINKAGE")
+ #endif
+ 
+ struct vtkSMPToolsInit
+ {
+-  tbb::task_scheduler_init Init;
+-
+   vtkSMPToolsInit(int numThreads)
+-    : Init(numThreads)
+   {
+   }
+ };
+@@ -63,6 +58,5 @@
+ //--------------------------------------------------------------------------------
+ int vtkSMPTools::GetEstimatedNumberOfThreads()
+ {
+-  return vtkTBBNumSpecifiedThreads ? vtkTBBNumSpecifiedThreads
+-                                   : tbb::task_scheduler_init::default_num_threads();
++  return tbb::this_task_arena::max_concurrency();
+ }

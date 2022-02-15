@@ -13,6 +13,19 @@ source:
   url: http://www.vtk.org/files/release/{{ minor_version }}/VTK-{{ version }}.tar.gz
   fn:  VTK-{{ version }}.tar.gz
   sha256: bc3eb9625b2b8dbfecb6052a2ab091fc91405de4333b0ec68f3323815154ed8a
+  patches:
+    # The tbb_stddef.h does not exist in recent releases, instead take the
+    # version from version.h
+    - use-tbb-version-h-instead-of-stddef-h.patch
+    # tbb::task_scheduler_init has been deprecated since Intel TBB 4.3 Update 5
+    # and in the new Intel oneTBB 2021.x releases it is finally completely gone.
+    #
+    # By default, Intel TBB automatically creates a task scheduler the first
+    # time that a thread uses task scheduling services and destroys it when the
+    # last such thread exits.
+    - no-explicit-task-scheduler.patch
+    # tbb::atomic was deprecated and removed, replace it with std::atomic.
+    - use-std-atomic-instead-of-tbb-atomic.patch
 
 build:
   skip: True  # [win and vc<14 or s390x or ppc64le]
@@ -38,6 +51,8 @@ requirements:
     - {{ compiler("cxx") }}
     - cmake
     - ninja
+    - patch  # [not win]
+    - m2-patch  # [win]
   {% if SUBDIR in ('linux-64', 'linux-32', 'linux-ppc64le', 'linux-aarch64') %}
     - {{ cdt('libxcb') }}
     - {{ cdt('libxau') }}
@@ -103,7 +118,7 @@ requirements:
     - hdf5
     - libxml2
     - libpng
-    - jpeg
+    - jpeg  # [not win]
     - libtiff
     - jsoncpp
     - expat
@@ -112,7 +127,7 @@ requirements:
     - libnetcdf
     - lz4-c
     - tk  # [not win and not VTK_WITH_OSMESA]
-    - ffmpeg
+    - ffmpeg  # [not win]
     - utfcpp
     - eigen
     - double-conversion
