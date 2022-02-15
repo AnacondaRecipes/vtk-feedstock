@@ -40,9 +40,12 @@ build:
     - '*/libpthread.so.*'
     - '*/libvtk*.dylib'
   ignore_run_exports:
+    - ffmpeg  # [win]
+    - jpeg  # [win]
     - libogg    # seems required to enable OGG support, but not actually linked to?
-    - pugixml
     - loguru
+    - pugixml
+    - qt # [win]
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
 
