@@ -42,9 +42,8 @@ build:
   ignore_run_exports:
     # Seems required to enable OGG support, but not actually linked to?
     - libogg
-    # Not sure why overlinking is only reported on osx and aarch64, this may be
-    # toolchain-related.
-    - pugixml  # [osx or aarch64]
+    # It's definitely needed during build.
+    - pugixml  # [unix]
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
 
