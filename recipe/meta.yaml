@@ -40,12 +40,7 @@ build:
     - '*/libpthread.so.*'
     - '*/libvtk*.dylib'
   ignore_run_exports:
-    - ffmpeg  # [win]
-    - jpeg  # [win]
-    - libogg    # seems required to enable OGG support, but not actually linked to?
-    - loguru
-    - pugixml
-    - qt # [win]
+    - libogg  # seems required to enable OGG support, but not actually linked to?
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
 
@@ -79,10 +74,10 @@ requirements:
     # VTK Third Party dependencies
     - zlib
     - freetype
-    - hdf5     # [unix]
+    - hdf5  # [unix]
     - libxml2
     - libpng
-    - jpeg
+    - jpeg  # [not win]
     - libtiff
     - jsoncpp
     - expat
@@ -93,12 +88,12 @@ requirements:
     # available when VTK 8.2 was released.
     - tbb
     - tbb-devel
-    - mesalib   # [VTK_WITH_OSMESA]
+    - mesalib  # [VTK_WITH_OSMESA]
     - libnetcdf
     - lz4-c
     - boost-cpp
-    - tk          # [not win and not VTK_WITH_OSMESA]
-    - ffmpeg
+    - tk  # [not win and not VTK_WITH_OSMESA]
+    - ffmpeg  # [not win]
     - utfcpp
     - eigen
     - double-conversion
@@ -112,7 +107,7 @@ requirements:
     - gl2ps
     # We have an (experimental?) Qt 6.1 build available on osx-arm64,
     # but for the sake of coherence, we pin to 5 across all variants.
-    - qt =5
+    - qt =5  # [not win]
     - xz
   run:
     - python <3.10
@@ -126,7 +121,7 @@ requirements:
     - jsoncpp
     - expat
     - tbb
-    - mesalib   # [VTK_WITH_OSMESA]
+    - mesalib  # [VTK_WITH_OSMESA]
     - libnetcdf
     - lz4-c
     - tk  # [not win and not VTK_WITH_OSMESA]
@@ -143,7 +138,7 @@ requirements:
     - gl2ps
     - pugixml
     # Not all our Qt builds in distribution seem to export a pinning.
-    - {{ pin_compatible('qt') }}
+    - {{ pin_compatible('qt') }}  # [not win]
     - xz
 
   run_constrained:
