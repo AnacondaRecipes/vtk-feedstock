@@ -164,8 +164,8 @@ test:
     - vtk.vtkViewsCore
     - vtk.vtkRenderingVolume
     - vtk.vtkInteractionWidgets
-    - vtk.vtkWebGLExporter
-    - vtk.tk.vtkTkRenderWidget  # [not (win or VTK_WITH_OSMESA or osx)]
+    - vtk.vtkWebGLExporter  # [not (win or VTK_WITH_OSMESA or osx)]
+    - vtk.tk.vtkTkRenderWidget
     - vtkmodules
     - vtkmodules.vtkChartsCore
     - vtkmodules.vtkCommonCore
