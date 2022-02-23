@@ -192,6 +192,7 @@ about:
     system for 3D computer graphics, modeling, image processing, volume
     rendering, scientific visualization, and information visualization.
   dev_url: https://gitlab.kitware.com/vtk/vtk
+  doc_url: https://github.com/Kitware/VTK/tree/v9.0.3/Documentation/Doxygen
 
 extra:
   recipe-maintainers:
