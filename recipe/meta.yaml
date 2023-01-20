@@ -26,6 +26,7 @@ source:
     - no-explicit-task-scheduler.patch
     # tbb::atomic was deprecated and removed, replace it with std::atomic.
     - use-std-atomic-instead-of-tbb-atomic.patch
+    - patches/0001_add-missing-cpp-header-for-linux.patch
 
 build:
   skip: True  # [win32 or s390x or ppc64le]
