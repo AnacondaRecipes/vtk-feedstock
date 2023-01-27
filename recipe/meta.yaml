@@ -140,7 +140,7 @@ requirements:
     - sqlite
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
-    - {{ pin_compatible('qt') }}  # [not win]
+    - qt =5  # [not win]
     - xz
 
   run_constrained:
