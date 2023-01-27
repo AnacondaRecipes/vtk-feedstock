@@ -43,6 +43,7 @@ build:
   ignore_run_exports:
     # Seems required to enable OGG support, but not actually linked to?
     - libogg
+    - qt  # [not win]
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
 
