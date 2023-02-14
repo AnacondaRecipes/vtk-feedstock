@@ -10,7 +10,7 @@ package:
   version: {{ version }}
 
 source:
-  url: http://www.vtk.org/files/release/{{ major_minor }}/VTK-{{ version }}.tar.gz
+  url: https://www.vtk.org/files/release/{{ major_minor }}/VTK-{{ version }}.tar.gz
   fn:  VTK-{{ version }}.tar.gz
   sha256: bc3eb9625b2b8dbfecb6052a2ab091fc91405de4333b0ec68f3323815154ed8a
   patches:
@@ -43,7 +43,6 @@ build:
   ignore_run_exports:
     # Seems required to enable OGG support, but not actually linked to?
     - libogg
-    - qt-main
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
 
@@ -140,7 +139,7 @@ requirements:
     - sqlite
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
-    - {{ pin_compatible('qt') }}  # [not win]
+  #  - {{ pin_compatible('qt') }}  # [not win]
     - qt-main
     - xz
 
@@ -186,7 +185,7 @@ test:
     - python
 
 about:
-  home: https://www.vtk.org/
+  home: https://vtk.org/
   license: BSD-3-Clause
   license_family: BSD
   license_file: Copyright.txt
