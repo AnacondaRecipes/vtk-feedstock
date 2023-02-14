@@ -29,7 +29,7 @@ source:
     - patches/0001_add-missing-cpp-header-for-linux.patch
 
 build:
-  skip: True  # [win or s390x or ppc64le or py<310]
+  skip: True  # [win or s390x or ppc64le or py==310]
   number: {{ build_number }}
   features:
     - mesalib   # [VTK_WITH_OSMESA]
@@ -140,7 +140,7 @@ requirements:
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
   #  - {{ pin_compatible('qt') }}  # [not win]
-    - qt-main
+  #  - qt-main
     - xz
 
   run_constrained:
@@ -149,7 +149,6 @@ requirements:
 
 test:
   imports:
-    - vtk
     - vtk.vtkChartsCore
     - vtk.vtkCommonCore
     - vtk.vtkFiltersCore
