@@ -43,6 +43,7 @@ build:
   ignore_run_exports:
     # Seems required to enable OGG support, but not actually linked to?
     - libogg
+    - qt
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
 
@@ -139,8 +140,8 @@ requirements:
     - sqlite
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
-  #  - {{ pin_compatible('qt') }}  # [not win]
-  #  - qt-main
+    - {{ pin_compatible('qt') }}  # [not win]
+    - qt-main
     - xz
 
   run_constrained:
