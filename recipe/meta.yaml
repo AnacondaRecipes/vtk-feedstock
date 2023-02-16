@@ -140,7 +140,6 @@ requirements:
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
     - {{ pin_compatible('qt') }}  # [not win]
-    - qt-main
     - xz
 
   run_constrained:
