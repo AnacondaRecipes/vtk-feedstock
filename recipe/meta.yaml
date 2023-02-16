@@ -29,7 +29,7 @@ source:
     - patches/0001_add-missing-cpp-header-for-linux.patch
 
 build:
-  skip: True  # [win or s390x or ppc64le or py==310]
+  skip: True  # [win32 or s390x or ppc64le or py<37]
   number: {{ build_number }}
   features:
     - mesalib   # [VTK_WITH_OSMESA]
