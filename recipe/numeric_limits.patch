@@ -10,3 +10,15 @@ Index: VTK-9.0.3/Common/Core/vtkGenericDataArrayLookupHelper.h
  #include <cmath>
  #include <unordered_map>
  #include <vector>
+Index: VTK-9.0.3/Common/DataModel/vtkPiecewiseFunction.cxx
+===================================================================
+--- VTK-9.0.3.orig/Common/DataModel/vtkPiecewiseFunction.cxx
++++ VTK-9.0.3/Common/DataModel/vtkPiecewiseFunction.cxx
+@@ -24,6 +24,7 @@
+ #include <iterator>
+ #include <set>
+ #include <vector>
++#include <limits>
+ 
+ vtkStandardNewMacro(vtkPiecewiseFunction);
+ 
