@@ -10,7 +10,7 @@ package:
   version: {{ version }}
 
 source:
-  url: http://www.vtk.org/files/release/{{ major_minor }}/VTK-{{ version }}.tar.gz
+  url: https://www.vtk.org/files/release/{{ major_minor }}/VTK-{{ version }}.tar.gz
   fn:  VTK-{{ version }}.tar.gz
   sha256: bc3eb9625b2b8dbfecb6052a2ab091fc91405de4333b0ec68f3323815154ed8a
   patches:
@@ -74,7 +74,7 @@ requirements:
     # VTK Third Party dependencies
     - zlib
     - freetype
-    - hdf5  # [unix]
+    - hdf5
     - libxml2
     - libpng
     - jpeg
@@ -136,7 +136,7 @@ requirements:
     - sqlite
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
-    - {{ pin_compatible('qt') }}  # [not win]
+    - {{ pin_compatible('qt') }}
     - xz
 
   run_constrained:
