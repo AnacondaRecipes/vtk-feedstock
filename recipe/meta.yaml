@@ -26,6 +26,7 @@ source:
     - no-explicit-task-scheduler.patch
     # tbb::atomic was deprecated and removed, replace it with std::atomic.
     - use-std-atomic-instead-of-tbb-atomic.patch
+    - numeric_limits.patch
 
 build:
   skip: True  # [win32 or s390x or ppc64le or py==310]

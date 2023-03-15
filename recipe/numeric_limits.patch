@@ -1,0 +1,12 @@
+Index: VTK-9.0.3/Common/Core/vtkGenericDataArrayLookupHelper.h
+===================================================================
+--- VTK-9.0.3.orig/Common/Core/vtkGenericDataArrayLookupHelper.h
++++ VTK-9.0.3/Common/Core/vtkGenericDataArrayLookupHelper.h
+@@ -24,6 +24,7 @@
+ 
+ #include "vtkIdList.h"
+ #include <algorithm>
++#include <limits>
+ #include <cmath>
+ #include <unordered_map>
+ #include <vector>
