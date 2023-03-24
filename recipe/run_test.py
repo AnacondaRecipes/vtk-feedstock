@@ -22,6 +22,11 @@ def render_enabled():
     if sys.platform == 'linux' and not 'DISPLAY' in os.environ:
         return False
 
+    # we need to turn it off on Windows ... as our builders come with an
+    # incomplete setup ...
+    if sys.platform != 'linux' and sys.platform != 'win':
+      return False
+
     return True
 
 # If this fails it raises a DistributionNotFound exception
