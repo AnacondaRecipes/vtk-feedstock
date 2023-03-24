@@ -4,6 +4,37 @@ import subprocess
 import sys
 import vtk
 
+import vtk.vtkChartsCore
+import vtk.vtkCommonCore
+import vtk.vtkFiltersCore
+import vtk.vtkFiltersGeneric
+import vtk.vtkGeovisCore
+import vtk.vtkFiltersHybrid
+import vtk.vtkIOCore
+import vtk.vtkImagingCore
+import vtk.vtkInfovisCore
+import vtk.vtkRenderingCore
+import vtk.vtkViewsCore
+import vtk.vtkRenderingVolume
+import vtk.vtkInteractionWidgets
+if sys.platform == 'linux' or sys.platform == 'darwin':
+    import vtk.vtkWebGLExporter
+import vtk.tk.vtkTkRenderWidget
+import vtkmodules
+import vtkmodules.vtkChartsCore
+import vtkmodules.vtkCommonCore
+import vtkmodules.vtkFiltersCore
+import vtkmodules.vtkFiltersGeneric
+import vtkmodules.vtkGeovisCore
+import vtkmodules.vtkFiltersHybrid
+import vtkmodules.vtkIOCore
+import vtkmodules.vtkImagingCore
+import vtkmodules.vtkInfovisCore
+import vtkmodules.vtkRenderingCore
+import vtkmodules.vtkViewsCore
+import vtkmodules.vtkRenderingVolume
+import vtkmodules.vtkInteractionWidgets
+
 def render_enabled():
     # The test hangs with VTK_WITH_OSMESA enabled.
     if os.environ.get('VTK_WITH_OSMESA') == 'True':
@@ -24,8 +55,8 @@ def render_enabled():
 
     # we need to turn it off on Windows ... as our builders come with an
     # incomplete setup ...
-    if sys.platform != 'linux' and sys.platform != 'win':
-      return False
+    if sys.platform.startswith("win"): 
+        return False
 
     return True
 
