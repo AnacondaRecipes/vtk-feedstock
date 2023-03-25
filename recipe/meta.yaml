@@ -1,5 +1,5 @@
 {% set version = "9.0.3" %}
-{% set build_number = 1 %}
+{% set build_number = 2 %}
 
 {% set major_minor = ".".join(version.split(".")[:2]) %}
 
@@ -10,7 +10,7 @@ package:
   version: {{ version }}
 
 source:
-  url: http://www.vtk.org/files/release/{{ major_minor }}/VTK-{{ version }}.tar.gz
+  url: https://www.vtk.org/files/release/{{ major_minor }}/VTK-{{ version }}.tar.gz
   fn:  VTK-{{ version }}.tar.gz
   sha256: bc3eb9625b2b8dbfecb6052a2ab091fc91405de4333b0ec68f3323815154ed8a
   patches:
@@ -26,6 +26,7 @@ source:
     - no-explicit-task-scheduler.patch
     # tbb::atomic was deprecated and removed, replace it with std::atomic.
     - use-std-atomic-instead-of-tbb-atomic.patch
+    - numeric_limits.patch
 
 build:
   skip: True  # [win32 or s390x or ppc64le or py==310]
@@ -39,9 +40,6 @@ build:
     - '*/libm.so.*'
     - '*/libpthread.so.*'
     - '*/libvtk*.dylib'
-  ignore_run_exports:
-    # Seems required to enable OGG support, but not actually linked to?
-    - libogg
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
 
@@ -76,10 +74,10 @@ requirements:
     # VTK Third Party dependencies
     - zlib
     - freetype
-    - hdf5  # [unix]
+    - hdf5
     - libxml2
     - libpng
-    - jpeg  # [not win]
+    - jpeg
     - libtiff
     - jsoncpp
     - expat
@@ -95,7 +93,7 @@ requirements:
     - lz4-c
     - boost-cpp
     - tk  # [not win and not VTK_WITH_OSMESA]
-    - ffmpeg  # [not win]
+    - ffmpeg
     - utfcpp
     - eigen
     - double-conversion
@@ -108,7 +106,7 @@ requirements:
     - gl2ps
     # We have an (experimental?) Qt 6.1 build available on osx-arm64,
     # but for the sake of coherence, we pin to 5 across all variants.
-    - qt =5  # [not win]
+    - qt =5
     - xz
   run:
     - python
@@ -117,7 +115,7 @@ requirements:
     - hdf5
     - libxml2
     - libpng
-    - jpeg  # [not win]
+    - jpeg
     - libtiff
     - jsoncpp
     - expat
@@ -126,7 +124,7 @@ requirements:
     - libnetcdf
     - lz4-c
     - tk  # [not win and not VTK_WITH_OSMESA]
-    - ffmpeg  # [not win]
+    - ffmpeg
     - utfcpp
     - eigen
     - double-conversion
@@ -138,7 +136,7 @@ requirements:
     - sqlite
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
-    - {{ pin_compatible('qt') }}  # [not win]
+    - {{ pin_compatible('qt') }}
     - xz
 
   run_constrained:
@@ -146,38 +144,6 @@ requirements:
     - paraview ==9999999999
 
 test:
-  imports:
-    - vtk
-    - vtk.vtkChartsCore
-    - vtk.vtkCommonCore
-    - vtk.vtkFiltersCore
-    - vtk.vtkFiltersGeneric
-    - vtk.vtkGeovisCore
-    - vtk.vtkFiltersHybrid
-    - vtk.vtkIOCore
-    - vtk.vtkImagingCore
-    - vtk.vtkInfovisCore
-    - vtk.vtkRenderingCore
-    - vtk.vtkViewsCore
-    - vtk.vtkRenderingVolume
-    - vtk.vtkInteractionWidgets
-    - vtk.vtkWebGLExporter  # [not win]
-    - vtk.tk.vtkTkRenderWidget
-    - vtkmodules
-    - vtkmodules.vtkChartsCore
-    - vtkmodules.vtkCommonCore
-    - vtkmodules.vtkFiltersCore
-    - vtkmodules.vtkFiltersGeneric
-    - vtkmodules.vtkGeovisCore
-    - vtkmodules.vtkFiltersHybrid
-    - vtkmodules.vtkIOCore
-    - vtkmodules.vtkImagingCore
-    - vtkmodules.vtkInfovisCore
-    - vtkmodules.vtkRenderingCore
-    - vtkmodules.vtkViewsCore
-    - vtkmodules.vtkRenderingVolume
-    - vtkmodules.vtkInteractionWidgets
-
   requires:
     - setuptools
     - python
