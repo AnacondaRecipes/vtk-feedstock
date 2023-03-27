@@ -1,5 +1,5 @@
 {% set version = "9.0.3" %}
-{% set build_number = 2 %}
+{% set build_number = 3 %}
 
 {% set major_minor = ".".join(version.split(".")[:2]) %}
 
@@ -75,7 +75,7 @@ requirements:
     - zlib
     - freetype
     - hdf5
-    - libxml2
+    - libxml2 2.10
     - libpng
     - jpeg
     - libtiff
@@ -113,7 +113,7 @@ requirements:
     - zlib
     - freetype
     - hdf5
-    - libxml2
+    - libxml2 >=2.10.3,<2.11.0a0
     - libpng
     - jpeg
     - libtiff
