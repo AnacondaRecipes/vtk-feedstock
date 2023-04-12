@@ -124,7 +124,7 @@ requirements:
     - lz4-c
     - tk  # [not win and not VTK_WITH_OSMESA]
     - ffmpeg
-    - utfcpp  #{{ pin_compatible('utfcpp') }}
+    - {{ pin_compatible('utfcpp') }}
     - {{ pin_compatible('eigen') }}
     - {{ pin_compatible('double-conversion') }}
     - glew
@@ -148,7 +148,7 @@ test:
     - python
 
 about:
-  home: https://www.vtk.org/
+  home: https://vtk.org/
   license: BSD-3-Clause
   license_family: BSD
   license_file: Copyright.txt
