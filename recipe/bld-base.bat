@@ -22,12 +22,21 @@ cmake .. -G "Ninja" ^
     -DVTK_PYTHON_VERSION:STRING="%PYTHON_MAJOR_VERSION%" ^
     -DPython3_FIND_STRATEGY=LOCATION ^
     -DPython3_ROOT_DIR="%PREFIX%" ^
+    -DVTK_BUILD_PYI_FILES:BOOL=ON ^
     -DVTK_HAS_FEENABLEEXCEPT:BOOL=OFF ^
     -DVTK_SMP_IMPLEMENTATION_TYPE:STRING=TBB ^
     -DVTK_DATA_EXCLUDE_FROM_ALL:BOOL=ON ^
     -DVTK_USE_EXTERNAL:BOOL=ON ^
+    -DVTK_MODULE_ENABLE_VTK_WebCore:STRING=YES ^
+    -DVTK_MODULE_ENABLE_VTK_WebGLExporter:STRING=YES ^
+    -DVTK_MODULE_ENABLE_VTK_WebPython:STRING=YES ^
     -DVTK_MODULE_USE_EXTERNAL_VTK_libharu:BOOL=OFF ^
     -DVTK_MODULE_USE_EXTERNAL_VTK_pegtl:BOOL=OFF ^
+    -DVTK_MODULE_USE_EXTERNAL_VTK_exprtk:BOOL=OFF ^
+    -DVTK_MODULE_USE_EXTERNAL_VTK_fmt:BOOL=OFF ^
+    -DVTK_MODULE_USE_EXTERNAL_VTK_cgns:BOOL=OFF ^
+    -DVTK_MODULE_USE_EXTERNAL_VTK_ioss:BOOL=OFF ^
+    -DVTK_MODULE_USE_EXTERNAL_VTK_verdict:BOOL=OFF ^
     -DLZMA_LIBRARY="%LIBRARY_PREFIX%/lib/liblzma.lib"
 if errorlevel 1 exit 1
 
@@ -41,7 +50,7 @@ REM See https://setuptools.readthedocs.io/en/latest/pkg_resources.html#workingse
 
 set egg_info=%SP_DIR%\vtk-%PKG_VERSION%.egg-info
 echo>%egg_info% Metadata-Version: 2.1
-echo>>%egg_info% Version: $PKG_VERSION
+echo>>%egg_info% Version: %PKG_VERSION%
 echo>>%egg_info% Summary: VTK is an open-source toolkit for 3D computer graphics, image processing, and visualization
 echo>>%egg_info% Platform: UNKNOWN
 

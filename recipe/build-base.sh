@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -ex
 
 BUILD_CONFIG=Release
 
@@ -9,12 +9,17 @@ PYTHON_MAJOR_VERSION=${PY_VER%%.*}
 
 VTK_ARGS=()
 
-if [ -f "$PREFIX/lib/libOSMesa32${SHLIB_EXT}" ]; then
+if [[ "$build_variant" == "osmesa" ]]; then
+    if [ -f "$PREFIX/lib/libOSMesa32${SHLIB_EXT}" ]; then
+        OSMESA_VERSION="32"
+    fi
     VTK_ARGS+=(
         "-DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN:BOOL=ON"
         "-DVTK_OPENGL_HAS_OSMESA:BOOL=ON"
         "-DOSMESA_INCLUDE_DIR:PATH=${PREFIX}/include"
-        "-DOSMESA_LIBRARY:FILEPATH=${PREFIX}/lib/libOSMesa32${SHLIB_EXT}"
+        "-DOSMESA_LIBRARY:FILEPATH=${PREFIX}/lib/libOSMesa${OSMESA_VERSION}${SHLIB_EXT}"
+        "-DOPENGL_opengl_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
+        "-DVTK_MODULE_USE_EXTERNAL_VTK_glew:BOOL=OFF"
     )
 
     if [[ "${target_platform}" == linux-* ]]; then
@@ -27,7 +32,18 @@ if [ -f "$PREFIX/lib/libOSMesa32${SHLIB_EXT}" ]; then
             "-DCMAKE_OSX_SYSROOT:PATH=${CONDA_BUILD_SYSROOT}"
         )
     fi
-else
+elif [[ "$build_variant" == "egl" ]]; then
+    VTK_ARGS+=(
+        "-DVTK_USE_X:BOOL=OFF"
+        "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
+        "-DVTK_MODULE_USE_EXTERNAL_VTK_glew:BOOL=OFF"
+        "-DEGL_INCLUDE_DIR:PATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/include"
+        "-DEGL_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib/libEGL.so.1"
+        "-DOPENGL_egl_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib/libEGL.so.1"
+        "-DEGL_opengl_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
+        "-DOPENGL_opengl_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libGL.so"
+    )
+elif [[ "$build_variant" == "qt" ]]; then
     TCLTK_VERSION=`echo 'puts $tcl_version;exit 0' | tclsh`
 
     VTK_ARGS+=(
@@ -51,7 +67,8 @@ else
     fi
 fi
 
-if [[ "$target_platform" != "linux-ppc64le" && "$target_platform" != "osx-arm64" ]]; then
+if [[ "$target_platform" != "linux-ppc64le"
+        && "$build_variant" == "qt" ]]; then
     VTK_ARGS+=(
         "-DVTK_MODULE_ENABLE_VTK_GUISupportQt:STRING=YES"
         "-DVTK_MODULE_ENABLE_VTK_RenderingQt:STRING=YES"
@@ -79,6 +96,15 @@ if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
   MAJ_MIN=$(echo $PKG_VERSION | rev | cut -d"." -f2- | rev)
   CMAKE_ARGS="${CMAKE_ARGS} -DVTKCompileTools_DIR=$SRC_DIR/vtk-compile-tools/lib/cmake/vtkcompiletools-${MAJ_MIN}/"
   CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_REQUIRE_LARGE_FILE_SUPPORT=1 -DCMAKE_REQUIRE_LARGE_FILE_SUPPORT__TRYRUN_OUTPUT="
+  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE=0 -DVTK_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE__TRYRUN_OUTPUT="
+  CMAKE_ARGS="${CMAKE_ARGS} -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE=0 -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE__TRYRUN_OUTPUT="
+fi
+
+# Only build pyi files when natively compiling
+if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
+  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
+else
+  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
 fi
 
 mkdir build
@@ -103,13 +129,14 @@ cmake -LAH .. -G "Ninja" ${CMAKE_ARGS} \
     -DVTK_HAS_FEENABLEEXCEPT:BOOL=OFF \
     -DVTK_WRAP_PYTHON:BOOL=ON \
     -DVTK_PYTHON_VERSION:STRING="${PYTHON_MAJOR_VERSION}" \
-    -DPython3_FIND_STRATEGY=LOCATION \
-    -DPython3_ROOT_DIR=${PREFIX} \
-    -DPython3_EXECUTABLE=${PREFIX}/bin/python \
+    -DPython3_EXECUTABLE=$PYTHON \
     -DVTK_MODULE_ENABLE_VTK_PythonInterpreter:STRING=NO \
     -DVTK_MODULE_ENABLE_VTK_RenderingFreeType:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_RenderingMatplotlib:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_FiltersParallelDIY2:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_IOFFMPEG:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_IOXdmf2:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_IOXdmf3:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_ViewsCore:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_ViewsContext2D:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_PythonContext2D:STRING=YES \
@@ -117,15 +144,34 @@ cmake -LAH .. -G "Ninja" ${CMAKE_ARGS} \
     -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_RenderingCore:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_RenderingOpenGL2:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_WebCore:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_WebGLExporter:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_WebPython:STRING=YES \
     -DVTK_DATA_EXCLUDE_FROM_ALL:BOOL=ON \
     -DVTK_USE_EXTERNAL:BOOL=ON \
     -DVTK_MODULE_USE_EXTERNAL_VTK_libharu:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_pegtl:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_exprtk:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_fmt:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_cgns:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_ioss:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_verdict:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_fast_float:BOOL=OFF \
     "${VTK_ARGS[@]}"
 
 # compile & install!
 ninja install -v
+
+# Create a directory for the vtk-io-ffmpeg package
+# and find the ffmpeg-related files and process each of them
+FFMPEG_DIR="$(dirname $PREFIX)/ffmpeg_dir"
+mkdir -p "$FFMPEG_DIR"
+find $PREFIX -name "*vtkIOFFMPEG*" -print0 | while IFS= read -r -d '' file; do
+    dest_dir="$FFMPEG_DIR/${file#$PREFIX/}"
+    mkdir -p "$(dirname "$dest_dir")"
+    mv "$file" "$dest_dir"
+done
+
 
 # The egg-info file is necessary because some packages,
 # like mayavi, have a __requires__ in their __invtkRenderWindow::New()it__.py,
