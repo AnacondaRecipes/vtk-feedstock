@@ -3,3 +3,4 @@ build_parameters:
   - "--suppress-variables"
   # - "--error-overlinking" turning off for sake of qt's dependencies
 
+aggregate_branch: 3.12
