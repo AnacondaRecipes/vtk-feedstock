@@ -86,8 +86,10 @@ cd build || exit
 
 echo "VTK_ARGS:" "${VTK_ARGS[@]}"
 
+export FREETYPE_DIR="${PREFIX}"
+
 # now we can start configuring
-cmake -LAH .. -G "Ninja" ${CMAKE_ARGS} \
+cmake .. -G "Ninja" ${CMAKE_ARGS} \
     -Wno-dev \
     -DCMAKE_BUILD_TYPE=$BUILD_CONFIG \
     -DCMAKE_PREFIX_PATH:PATH="${PREFIX}" \
@@ -122,6 +124,14 @@ cmake -LAH .. -G "Ninja" ${CMAKE_ARGS} \
     -DVTK_USE_EXTERNAL:BOOL=ON \
     -DVTK_MODULE_USE_EXTERNAL_VTK_libharu:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_pegtl:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_token:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_fast_float:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_exprtk:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_fmt:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_libharu:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_ioss:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_verdict:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_cgns:BOOL=OFF \
     "${VTK_ARGS[@]}"
 
 # compile & install!
