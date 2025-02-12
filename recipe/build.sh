@@ -2,8 +2,6 @@
 
 set -x
 
-export SDKROOT=$(xcrun --sdk macosx --show-sdk-path)
-export LIBRARY_PATH="$LIBRARY_PATH:$SDKROOT/usr/lib"
 
 BUILD_CONFIG=Release
 
