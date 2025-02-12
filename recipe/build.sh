@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Building ${PKG_NAME}."
 
 set -x
 
@@ -112,7 +113,10 @@ cmake .. -G "Ninja" ${CMAKE_ARGS} \
     -DVTK_MODULE_ENABLE_VTK_PythonInterpreter:STRING=NO \
     -DVTK_MODULE_ENABLE_VTK_RenderingFreeType:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_RenderingMatplotlib:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_FiltersParallelDIY2:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_IOFFMPEG:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_IOXdmf2:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_IOXdmf3:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_ViewsCore:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_ViewsContext2D:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_PythonContext2D:STRING=YES \
@@ -120,7 +124,9 @@ cmake .. -G "Ninja" ${CMAKE_ARGS} \
     -DVTK_MODULE_ENABLE_VTK_RenderingContextOpenGL2:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_RenderingCore:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_RenderingOpenGL2:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_WebCore:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_WebGLExporter:STRING=YES \
+    -DVTK_MODULE_ENABLE_VTK_WebPython:STRING=YES \
     -DVTK_DATA_EXCLUDE_FROM_ALL:BOOL=ON \
     -DVTK_USE_EXTERNAL:BOOL=ON \
     -DVTK_MODULE_USE_EXTERNAL_VTK_libharu:BOOL=OFF \
@@ -133,10 +139,11 @@ cmake .. -G "Ninja" ${CMAKE_ARGS} \
     -DVTK_MODULE_USE_EXTERNAL_VTK_ioss:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_verdict:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_cgns:BOOL=OFF \
+    -DQT_HOST_PATH:STRING="${PREFIX}" \
     "${VTK_ARGS[@]}"
 
 # compile & install!
-ninja install -v
+ninja install -j$CPU_COUNT || exit 1
 
 # The egg-info file is necessary because some packages,
 # like mayavi, have a __requires__ in their __invtkRenderWindow::New()it__.py,

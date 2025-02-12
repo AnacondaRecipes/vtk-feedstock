@@ -47,22 +47,25 @@ requirements:
     - patch  # [not win]
     - m2-patch  # [win]
     - pugixml
-  {% if SUBDIR in ('linux-64', 'linux-32', 'linux-ppc64le', 'linux-aarch64') %}
-    - {{ cdt('libxcb') }}
-    - {{ cdt('libxau') }}
-    - {{ cdt('libxau') }}
-    - {{ cdt('libuuid') }}
-    - {{ cdt('libxext') }}
-    - {{ cdt('libxfixes') }}
-    - {{ cdt('libxxf86vm') }}
-    - {{ cdt('libxdamage') }}
+  {% if SUBDIR in ('linux-64', 'linux-aarch64') %}
+    - {{ cdt('libice-devel') }}
     - {{ cdt('libselinux') }}
     - {{ cdt('libsm-devel') }}
-    - {{ cdt('libxt-devel') }}
-    - {{ cdt('libice-devel') }}
+    - {{ cdt('libuuid') }}
     - {{ cdt('libx11-devel') }}
-    - {{ cdt('mesa-libgl-devel') }}
+    - {{ cdt('libxau') }}
+    - {{ cdt('libxau') }}
+    - {{ cdt('libxcb') }}
+    - {{ cdt('libxdamage') }}
+    - {{ cdt('libxext') }}
+    - {{ cdt('libxfixes') }}
+    - {{ cdt('libxt-devel') }}
+    - {{ cdt('libxxf86vm') }}
     - {{ cdt('mesa-dri-drivers') }}
+    - {{ cdt('mesa-libegl-devel') }}
+    - {{ cdt('mesa-libegl') }}
+    - {{ cdt('mesa-libgbm') }}
+    - {{ cdt('mesa-libgl-devel') }}
     - {{ cdt('xorg-x11-proto-devel') }}
   {% endif %}
   host:
