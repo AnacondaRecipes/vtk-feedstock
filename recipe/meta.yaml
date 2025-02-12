@@ -39,7 +39,9 @@ build:
 requirements:
   build:
     - {{ compiler("cxx") }}
+    - {{ compiler('fortran') }}  # [build_variant != "qt"]
     - cmake
+    - ninja
     - patch  # [not win]
     - m2-patch  # [win]
     - pugixml
