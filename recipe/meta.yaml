@@ -24,7 +24,7 @@ source:
 build:
   # TODO: The build takes a couple of hours for every Python variant.
   # Remove py<312 before the final build.
-  skip: True  # [not win or s390x or ppc64le or py<312]
+  skip: True  # [s390x or py<312]
   number: {{ build_number }}
   features:
     - mesalib   # [VTK_WITH_OSMESA]
