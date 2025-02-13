@@ -3,3 +3,5 @@ build_parameters:
   - "--suppress-variables"
   # - "--error-overlinking" turning off for sake of qt's dependencies
 
+channels:
+  - https://staging.continuum.io/prefect/fs/glad-feedstock/pr1/507814d

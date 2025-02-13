@@ -87,9 +87,8 @@ fi
 if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
 else
-  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
   # TODO: Should restore this, but it breaks things for now
-  # An error ModuleNotFoundError: No module named 'vtkmodules.util'
+  # with an error ModuleNotFoundError: No module named 'vtkmodules.util'
   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
 fi
 
