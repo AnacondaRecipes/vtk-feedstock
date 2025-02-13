@@ -109,12 +109,14 @@ if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
   CMAKE_ARGS="${CMAKE_ARGS} -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE=0 -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE__TRYRUN_OUTPUT="
 fi
 
-# Only build pyi files when natively compiling
-if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
-  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
-else
-  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
-fi
+# An error ModuleNotFoundError: No module named 'vtkmodules.util'
+
+# # Only build pyi files when natively compiling
+# if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
+#   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
+# else
+#   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
+# fi
 
 mkdir build
 cd build || exit
