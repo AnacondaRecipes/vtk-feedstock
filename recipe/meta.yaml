@@ -118,7 +118,7 @@ requirements:
     - sqlite
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
-    - qt6-main  # [not ppc64le]
+    - qt-main  # [not ppc64le]
     - xz
 
   run_constrained:
