@@ -24,7 +24,7 @@ fi
 VTK_ARGS=()
 
 # TODO: Remove conditional and indentation (preserved to minimize diff on GH for now)
-if [[ "$build_variant" == "qt" ]]; then
+if [[ "qt" == "qt" ]]; then
     VTK_ARGS+=(
         "-DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN:BOOL=OFF"
         "-DVTK_USE_TK:BOOL=ON"
@@ -148,7 +148,7 @@ cmake .. -G "Ninja" ${CMAKE_ARGS} \
     "${VTK_ARGS[@]}"
 
 # compile & install!
-ninja install -j$CPU_COUNT || exit 1
+ninja install -j$CPU_COUNT -v || exit 1
 
 # Create a directory for the vtk-io-ffmpeg package
 # and find the ffmpeg-related files and process each of them

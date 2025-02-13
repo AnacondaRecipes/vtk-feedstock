@@ -1,6 +1,6 @@
 # https://doc.qt.io/qt-6/macos.html
 MACOSX_SDK_VERSION:        # [osx]
-  - '12.3'                 # [osx]
+  - '14.5'                 # [osx]
 
 replacements:
   all_replacements:
