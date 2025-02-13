@@ -35,7 +35,6 @@ requirements:
     - patch     # [not win]
     - m2-patch  # [win]
     - pugixml
-    - {{ cdt('libglvnd-devel') }}          # [linux]
     - {{ cdt('libice-devel') }}          # [linux]
     - {{ cdt('libselinux') }}            # [linux]
     - {{ cdt('libsm-devel') }}           # [linux]
