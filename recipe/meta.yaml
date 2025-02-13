@@ -1,16 +1,24 @@
 {% set version = "9.4.1" %}
-{% set build_number = 0 %}
+{% set build = 0 %}
 
-{% set major_minor = ".".join(version.split(".")[:2]) %}
+{% set minor_version = ".".join(version.split(".")[:2]) %}
 
-{% set build_number = build_number + 200 %}   # [not VTK_WITH_OSMESA]
+{% set build = build + 100 %}   # [build_variant == "osmesa"]
+{% set build = build + 200 %}   # [build_variant == "qt"]
+# typically, osmesa is selected by installing or not installing
+# mesalib, but it could also be selected via the build string:
+# `vtk * osmesa*` for osmesa
+# `vtk * egl*` for egl
+# `vtk * qt*` for qt-main
+# The 'build: string: ...' needs to be set in each output and the top-level
+# otherwise it won't be correct in the final build.
 
 package:
   name: vtk
   version: {{ version }}
 
 source:
-  url: https://www.vtk.org/files/release/{{ major_minor }}/VTK-{{ version }}.tar.gz
+  url: http://www.vtk.org/files/release/{{ minor_version }}/VTK-{{ version }}.tar.gz
   sha256: c253b0c8d002aaf98871c6d0cb76afc4936c301b72358a08d5f3f72ef8bc4529
   patches:
     - patches/fix-threads-windows.patch  # [win]
@@ -22,22 +30,22 @@ source:
     #- patches/11486.patch
 
 build:
+  number: {{ build }}
+  string: "{{ build_variant }}_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   # TODO: The build takes a couple of hours for every Python variant.
   # Remove py<312 before the final build.
   # TODO: Remove win before the final build
   skip: True  # [win or s390x or py<312]
-  number: {{ build_number }}
-  features:
-    - mesalib   # [VTK_WITH_OSMESA]
-  missing_dso_whitelist:
-    - '*/ld-linux-*.so.*'
-    - '*/libc.so.*'
-    - '*/libdl.so.*'
-    - '*/libm.so.*'
-    - '*/libpthread.so.*'
-    - '*/libvtk*.dylib'
+  ignore_run_exports_from:
+    - ffmpeg  # [not win]
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
+  track_features:
+    - vtk-egl  # [build_variant == "egl"]
+    - vtk-osmesa  # [build_variant == "osmesa"]
+
+  features:
+    - mesalib  # [build_variant == "osmesa"]
 
 requirements:
   build:
@@ -88,17 +96,17 @@ requirements:
     # available when VTK 8.2 was released.
     - tbb 2022.0.0
     - tbb-devel 2022.0.0
-    - mesalib  # [VTK_WITH_OSMESA]
+    - mesalib  # [build_variant == "osmesa"]
     - libnetcdf {{ libnetcdf }}
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
-    - tk  # [not win and not VTK_WITH_OSMESA]
+    - tk  # [not win and (build_variant == "qt")]
     - ffmpeg 6.1.1
     - utfcpp 3.2.1
     - eigen 3.4.0
     - double-conversion 3.1.5
     - pugixml 1.11.4
-    - glew 2.2.0
+    - glew 2.2.0  # [build_variant == "qt"]
     - libogg 1.3.5
     - libtheora 1
     - nlohmann_json 3.11.2
@@ -106,9 +114,7 @@ requirements:
     - loguru
     - sqlite {{ sqlite }}
     - gl2ps 1.4.2
-    # We have an (experimental?) Qt 6.1 build available on osx-arm64,
-    # but for the sake of coherence, we pin to 5 across all variants.
-    - qt-main =5
+    - qt-main =5  # [not ppc64le and (build_variant == "qt")]
     - xz {{ xz }}
   run:
     - python
@@ -122,10 +128,10 @@ requirements:
     - jsoncpp
     - expat
     - tbb
-    - mesalib  # [VTK_WITH_OSMESA]
+    - mesalib  # [build_variant == "osmesa"]
     - libnetcdf
     - lz4-c
-    - tk  # [not win and not VTK_WITH_OSMESA]
+    - tk  # [not win and (build_variant == "qt")]
     - ffmpeg
     - {{ pin_compatible('utfcpp') }}
     - {{ pin_compatible('eigen') }}
@@ -138,7 +144,7 @@ requirements:
     - sqlite
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
-    - {{ pin_compatible('qt') }}
+    - {{ pin_compatible('qt-main') }}  # [not ppc64le and (build_variant == "qt")]
     - xz
 
   run_constrained:
@@ -146,9 +152,59 @@ requirements:
     - paraview ==9999999999
 
 test:
+  imports:
+    - vtk
+    - vtk.vtkChartsCore
+    - vtk.vtkCommonCore
+    - vtk.vtkFiltersCore
+    - vtk.vtkFiltersGeneric
+    - vtk.vtkGeovisCore
+    - vtk.vtkFiltersHybrid
+    - vtk.vtkIOCore
+    - vtk.vtkImagingCore
+    - vtk.vtkInfovisCore
+    - vtk.vtkRenderingCore
+    - vtk.vtkViewsCore
+    - vtk.vtkRenderingVolume
+    - vtk.vtkInteractionWidgets
+    - vtk.vtkWebGLExporter
+    - vtk.tk.vtkTkRenderWidget  # [not win and (build_variant == "qt")]
+    - vtkmodules
+    - vtkmodules.vtkChartsCore
+    - vtkmodules.vtkCommonCore
+    - vtkmodules.vtkFiltersCore
+    - vtkmodules.vtkFiltersGeneric
+    - vtkmodules.vtkGeovisCore
+    - vtkmodules.vtkFiltersHybrid
+    - vtkmodules.vtkIOCore
+    - vtkmodules.vtkImagingCore
+    - vtkmodules.vtkInfovisCore
+    - vtkmodules.vtkRenderingCore
+    - vtkmodules.vtkViewsCore
+    - vtkmodules.vtkRenderingQt  # [build_variant == "qt"]
+    - vtkmodules.vtkRenderingVolume
+    - vtkmodules.vtkInteractionWidgets
+    - vtkmodules.vtkWebCore
+    - vtkmodules.web
+    - vtkmodules.web.utils
+
   requires:
+    - pip
     - setuptools
-    - python
+
+  commands:
+    - pip check
+    - test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1  # [unix]
+    - pip list | findstr "vtk"  # [win]
+    {% set vtk_qt_libs = [
+        "vtkGUISupportQt",
+        "vtkRenderingQt"
+    ] %}
+    {% for vtk_lib in vtk_qt_libs %}
+    - test -f $PREFIX/lib/lib{{ vtk_lib }}-{{ minor_version }}${SHLIB_EXT}  # [not win and (build_variant == "qt")]
+    - if not exist %PREFIX%\\Library\\lib\\{{ vtk_lib }}-{{ minor_version }}.lib exit 1  # [win and (build_variant == "qt")]
+    - if not exist %PREFIX%\\Library\\bin\\{{ vtk_lib }}-{{ minor_version }}.dll exit 1  # [win and (build_variant == "qt")]
+    {% endfor %}
 
 about:
   home: https://vtk.org/

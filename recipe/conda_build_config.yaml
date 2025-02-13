@@ -1,9 +1,10 @@
 # MACOSX_SDK_VERSION:        # [osx]
 #   - '12.3'                 # [osx]
 
-VTK_WITH_OSMESA:
-  - False
-  # - True  # [unix]
+build_variant:
+  - "qt"
+  - "osmesa"  # [linux64]
+  - "egl"  # [linux64]
 replacements:
   all_replacements:
     - tag: 'CMake build metadata'
