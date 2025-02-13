@@ -70,8 +70,8 @@ requirements:
     # safe to use but generates *tons* of deprecation warnings that (may) hint
     # at subtle breaks. Given all that, we set the limit to the latest version
     # available when VTK 8.2 was released.
-    - tbb 2022.0.0
-    - tbb-devel 2022.0.0
+    - tbb
+    - tbb-devel
     - libnetcdf {{ libnetcdf }}
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
@@ -89,7 +89,10 @@ requirements:
     - proj {{ proj }}
     - loguru
     - sqlite {{ sqlite }}
-    - gl2ps 1.4.2
+    # Until this is solved:
+    # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
+    # we use the internal one in build-base.sh
+    - gl2ps  # [not osx]
     - qt-main =6  # [not ppc64le]
     - xz {{ xz }}
   run:
