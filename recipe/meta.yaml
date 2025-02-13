@@ -93,6 +93,7 @@ requirements:
     - xz {{ xz }}
   run:
     - python
+    - {{ pin_compatible('double-conversion') }}
     - glad2
     - loguru
     - loguru
