@@ -3,16 +3,6 @@
 
 {% set minor_version = ".".join(version.split(".")[:2]) %}
 
-{% set build = build + 100 %}   # [build_variant == "osmesa"]
-{% set build = build + 200 %}   # [build_variant == "qt"]
-# typically, osmesa is selected by installing or not installing
-# mesalib, but it could also be selected via the build string:
-# `vtk * osmesa*` for osmesa
-# `vtk * egl*` for egl
-# `vtk * qt*` for qt-main
-# The 'build: string: ...' needs to be set in each output and the top-level
-# otherwise it won't be correct in the final build.
-
 package:
   name: vtk
   version: {{ version }}
@@ -26,57 +16,44 @@ source:
     # https://gitlab.kitware.com/vtk/vtk/-/issues/18365#note_1079278
     # https://gitlab.kitware.com/vtk/vtk/-/merge_requests/9987
     - patches/9987_try_except_python_import.patch  # [not win]
-    # https://gitlab.kitware.com/vtk/vtk/-/merge_requests/11486
-    #- patches/11486.patch
 
 build:
   number: {{ build }}
-  string: "{{ build_variant }}_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
-  # TODO: The build takes a couple of hours for every Python variant.
-  # Remove py<312 before the final build.
+  string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   # TODO: Remove win before the final build
   skip: True  # [win or s390x or py<312]
   ignore_run_exports_from:
     - ffmpeg  # [not win]
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
-  track_features:
-    - vtk-egl  # [build_variant == "egl"]
-    - vtk-osmesa  # [build_variant == "osmesa"]
-
-  features:
-    - mesalib  # [build_variant == "osmesa"]
 
 requirements:
   build:
     - {{ compiler("cxx") }}
-    - {{ compiler('fortran') }}  # [build_variant != "qt"]
     - cmake
     - ninja
-    - patch  # [not win]
+    - patch     # [not win]
     - m2-patch  # [win]
     - pugixml
-  {% if SUBDIR in ('linux-64', 'linux-aarch64') %}
-    - {{ cdt('libice-devel') }}
-    - {{ cdt('libselinux') }}
-    - {{ cdt('libsm-devel') }}
-    - {{ cdt('libuuid') }}
-    - {{ cdt('libx11-devel') }}
-    - {{ cdt('libxau') }}
-    - {{ cdt('libxau') }}
-    - {{ cdt('libxcb') }}
-    - {{ cdt('libxdamage') }}
-    - {{ cdt('libxext') }}
-    - {{ cdt('libxfixes') }}
-    - {{ cdt('libxt-devel') }}
-    - {{ cdt('libxxf86vm') }}
-    - {{ cdt('mesa-dri-drivers') }}
-    - {{ cdt('mesa-libegl-devel') }}
-    - {{ cdt('mesa-libegl') }}
-    - {{ cdt('mesa-libgbm') }}
-    - {{ cdt('mesa-libgl-devel') }}
-    - {{ cdt('xorg-x11-proto-devel') }}
-  {% endif %}
+    - {{ cdt('libglvnd-devel') }}          # [linux]
+    - {{ cdt('libice-devel') }}          # [linux]
+    - {{ cdt('libselinux') }}            # [linux]
+    - {{ cdt('libsm-devel') }}           # [linux]
+    - {{ cdt('libuuid') }}               # [linux]
+    - {{ cdt('libx11-devel') }}          # [linux]
+    - {{ cdt('libxau') }}                # [linux]
+    - {{ cdt('libxcb') }}                # [linux]
+    - {{ cdt('libxdamage') }}            # [linux]
+    - {{ cdt('libxext') }}               # [linux]
+    - {{ cdt('libxfixes') }}             # [linux]
+    - {{ cdt('libxt-devel') }}           # [linux]
+    - {{ cdt('libxxf86vm') }}            # [linux]
+    - {{ cdt('mesa-dri-drivers') }}      # [linux]
+    - {{ cdt('mesa-libegl-devel') }}     # [linux]
+    - {{ cdt('mesa-libegl') }}           # [linux]
+    - {{ cdt('mesa-libgbm') }}           # [linux]
+    - {{ cdt('mesa-libgl-devel') }}      # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
   host:
     - python
     # VTK Third Party dependencies
@@ -96,11 +73,10 @@ requirements:
     # available when VTK 8.2 was released.
     - tbb 2022.0.0
     - tbb-devel 2022.0.0
-    - mesalib  # [build_variant == "osmesa"]
     - libnetcdf {{ libnetcdf }}
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
-    - tk  # [not win and (build_variant == "qt")]
+    - tk  # [not win]
     - ffmpeg 6.1.1
     - utfcpp 3.2.1
     - eigen 3.4.0
@@ -114,7 +90,7 @@ requirements:
     - loguru
     - sqlite {{ sqlite }}
     - gl2ps 1.4.2
-    - qt-main =5  # [not ppc64le and (build_variant == "qt")]
+    - qt-main =6  # [not ppc64le]
     - xz {{ xz }}
   run:
     - python
@@ -128,10 +104,9 @@ requirements:
     - jsoncpp
     - expat
     - tbb
-    - mesalib  # [build_variant == "osmesa"]
     - libnetcdf
     - lz4-c
-    - tk  # [not win and (build_variant == "qt")]
+    - tk  # [not win]
     - ffmpeg
     - {{ pin_compatible('utfcpp') }}
     - {{ pin_compatible('eigen') }}
@@ -144,7 +119,7 @@ requirements:
     - sqlite
     - gl2ps
     # Not all our Qt builds in distribution seem to export a pinning.
-    - {{ pin_compatible('qt-main') }}  # [not ppc64le and (build_variant == "qt")]
+    - qt6-main  # [not ppc64le]
     - xz
 
   run_constrained:
@@ -168,7 +143,7 @@ test:
     - vtk.vtkRenderingVolume
     - vtk.vtkInteractionWidgets
     - vtk.vtkWebGLExporter
-    - vtk.tk.vtkTkRenderWidget  # [not win and (build_variant == "qt")]
+    - vtk.tk.vtkTkRenderWidget  # [not win]
     - vtkmodules
     - vtkmodules.vtkChartsCore
     - vtkmodules.vtkCommonCore
@@ -181,7 +156,7 @@ test:
     - vtkmodules.vtkInfovisCore
     - vtkmodules.vtkRenderingCore
     - vtkmodules.vtkViewsCore
-    - vtkmodules.vtkRenderingQt  # [build_variant == "qt"]
+    - vtkmodules.vtkRenderingQt
     - vtkmodules.vtkRenderingVolume
     - vtkmodules.vtkInteractionWidgets
     - vtkmodules.vtkWebCore
@@ -196,15 +171,17 @@ test:
     - pip check
     - test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1  # [unix]
     - pip list | findstr "vtk"  # [win]
-    {% set vtk_qt_libs = [
-        "vtkGUISupportQt",
-        "vtkRenderingQt"
-    ] %}
-    {% for vtk_lib in vtk_qt_libs %}
-    - test -f $PREFIX/lib/lib{{ vtk_lib }}-{{ minor_version }}${SHLIB_EXT}  # [not win and (build_variant == "qt")]
-    - if not exist %PREFIX%\\Library\\lib\\{{ vtk_lib }}-{{ minor_version }}.lib exit 1  # [win and (build_variant == "qt")]
-    - if not exist %PREFIX%\\Library\\bin\\{{ vtk_lib }}-{{ minor_version }}.dll exit 1  # [win and (build_variant == "qt")]
-    {% endfor %}
+    # Ideally here we would do:
+    # {% for vtk_lib in ["vtkGUISupportQt", "vtkRenderingQt"] %}
+    # ...
+    # {% endfor %}
+    # But it breaks the linter :( so we do it manually
+    - test -f $PREFIX/lib/libvtkGUISupportQt-{{ minor_version }}${SHLIB_EXT}  # [not win]
+    - if not exist %PREFIX%\\Library\\lib\\vtkGUISupportQt-{{ minor_version }}.lib exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\bin\\vtkGUISupportQt-{{ minor_version }}.dll exit 1  # [win]
+    - test -f $PREFIX/lib/libvtkRenderingQt-{{ minor_version }}${SHLIB_EXT}  # [not win]
+    - if not exist %PREFIX%\\Library\\lib\\vtkRenderingQt-{{ minor_version }}.lib exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\bin\\vtkRenderingQt-{{ minor_version }}.dll exit 1  # [win]
 
 about:
   home: https://vtk.org/

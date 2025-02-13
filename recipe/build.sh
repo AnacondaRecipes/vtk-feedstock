@@ -9,57 +9,32 @@ BUILD_CONFIG=Release
 # Use bash "Remove Largest Suffix Pattern" to get rid of all but major version number
 PYTHON_MAJOR_VERSION=${PY_VER%%.*}
 
+if [[ "${target_platform}" =~ osx-arm64 && "${target_platform}" != "${build_platform}" ]]; then
+    rm -f "${PREFIX}/lib/qt6/moc"
+    ln -s "${BUILD_PREFIX}/lib/qt6/moc" "${PREFIX}/lib/qt6/moc"
+
+    # Additional debugging information
+    echo "Adjusted Qt tools for osx-arm64 with build variant qt6"
+    echo "Removed: ${PREFIX}/lib/qt6/moc"
+    echo "Linked to: ${BUILD_PREFIX}/lib/qt6/moc"
+else
+    echo "Skipping Qt tools adjustment. Target platform: ${target_platform}"
+fi
+
 VTK_ARGS=()
 
-if [[ "$build_variant" == "osmesa" ]]; then
-    if [ -f "$PREFIX/lib/libOSMesa32${SHLIB_EXT}" ]; then
-        OSMESA_VERSION="32"
-    fi
-    VTK_ARGS+=(
-        "-DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN:BOOL=ON"
-        "-DVTK_OPENGL_HAS_OSMESA:BOOL=ON"
-        "-DOSMESA_INCLUDE_DIR:PATH=${PREFIX}/include"
-        "-DOSMESA_LIBRARY:FILEPATH=${PREFIX}/lib/libOSMesa${OSMESA_VERSION}${SHLIB_EXT}"
-        "-DOPENGL_opengl_LIBRARY:FILEPATH=${PREFIX}/lib/libGL.so.1"
-        "-DVTK_MODULE_USE_EXTERNAL_VTK_glew:BOOL=OFF"
-    )
-
-    if [[ "${target_platform}" == linux-* ]]; then
-        VTK_ARGS+=(
-            "-DVTK_USE_X:BOOL=OFF"
-        )
-    elif [[ "${target_platform}" == osx-* ]]; then
-        VTK_ARGS+=(
-            "-DVTK_USE_COCOA:BOOL=OFF"
-            "-DCMAKE_OSX_SYSROOT:PATH=${CONDA_BUILD_SYSROOT}"
-        )
-    fi
-elif [[ "$build_variant" == "egl" ]]; then
-    VTK_ARGS+=(
-        "-DVTK_USE_X:BOOL=OFF"
-        "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
-        "-DVTK_MODULE_USE_EXTERNAL_VTK_glew:BOOL=OFF"
-        "-DEGL_INCLUDE_DIR:PATH=${PREFIX}/include"
-        "-DEGL_LIBRARY:FILEPATH=${PREFIX}/lib/libEGL.so.1"
-        "-DOPENGL_egl_LIBRARY:FILEPATH=${PREFIX}/lib/libEGL.so.1"
-        "-DEGL_opengl_LIBRARY:FILEPATH=${PREFIX}/lib/libGL.so.1"
-        "-DOPENGL_opengl_LIBRARY:FILEPATH=${PREFIX}/lib/libGL.so.1"
-    )
-elif [[ "$build_variant" == "qt" ]]; then
-    TCLTK_VERSION=`echo 'puts $tcl_version;exit 0' | tclsh`
-
+# TODO: Remove conditional and indentation (preserved to minimize diff on GH for now)
+if [[ "$build_variant" == "qt" ]]; then
     VTK_ARGS+=(
         "-DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN:BOOL=OFF"
-        "-DVTK_OPENGL_HAS_OSMESA:BOOL=OFF"
         "-DVTK_USE_TK:BOOL=ON"
-        "-DTCL_INCLUDE_PATH=${PREFIX}/include"
-        "-DTK_INCLUDE_PATH=${PREFIX}/include"
-        "-DTCL_LIBRARY:FILEPATH=${PREFIX}/lib/libtcl${TCLTK_VERSION}${SHLIB_EXT}"
-        "-DTK_LIBRARY:FILEPATH=${PREFIX}/lib/libtk${TCLTK_VERSION}${SHLIB_EXT}"
     )
     if [[ "${target_platform}" == linux-* ]]; then
         VTK_ARGS+=(
             "-DVTK_USE_X:BOOL=ON"
+            "-DOPENGL_opengl_LIBRARY:FILEPATH=${PREFIX}/lib/libGL.so.1"
+            "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
+            "-DOPENGL_egl_LIBRARY:FILEPATH=${PREFIX}/lib/libEGL.so.1"
             "-DOPENGL_opengl_LIBRARY:FILEPATH=${PREFIX}/lib/libGL.so.1"
         )
     elif [[ "${target_platform}" == osx-* ]]; then
@@ -70,8 +45,7 @@ elif [[ "$build_variant" == "qt" ]]; then
     fi
 fi
 
-if [[ "$target_platform" != "linux-ppc64le"
-        && "$build_variant" == "qt" ]]; then
+if [[ "$target_platform" != "linux-ppc64le" ]]; then
     VTK_ARGS+=(
         "-DVTK_MODULE_ENABLE_VTK_GUISupportQt:STRING=YES"
         "-DVTK_MODULE_ENABLE_VTK_RenderingQt:STRING=YES"
@@ -109,21 +83,20 @@ if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
   CMAKE_ARGS="${CMAKE_ARGS} -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE=0 -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE__TRYRUN_OUTPUT="
 fi
 
-# An error ModuleNotFoundError: No module named 'vtkmodules.util'
-
-# # Only build pyi files when natively compiling
-# if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
-#   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
-# else
-#   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
-# fi
+# Only build pyi files when natively compiling
+if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
+  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
+else
+  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
+  # TODO: Should restore this, but it breaks things for now
+  # An error ModuleNotFoundError: No module named 'vtkmodules.util'
+  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
+fi
 
 mkdir build
 cd build || exit
 
 echo "VTK_ARGS:" "${VTK_ARGS[@]}"
-
-#export FREETYPE_DIR="${PREFIX}"
 
 # now we can start configuring
 cmake .. -G "Ninja" ${CMAKE_ARGS} \
@@ -162,18 +135,16 @@ cmake .. -G "Ninja" ${CMAKE_ARGS} \
     -DVTK_MODULE_ENABLE_VTK_WebCore:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_WebGLExporter:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_WebPython:STRING=YES \
-    -DVTK_DATA_EXCLUDE_FROM_ALL:BOOL=ON \
     -DVTK_USE_EXTERNAL:BOOL=ON \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_cgns:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_exprtk:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_fast_float:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_fmt:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_ioss:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_libharu:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_pegtl:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_token:BOOL=OFF \
-    -DVTK_MODULE_USE_EXTERNAL_VTK_fast_float:BOOL=OFF \
-    -DVTK_MODULE_USE_EXTERNAL_VTK_exprtk:BOOL=OFF \
-    -DVTK_MODULE_USE_EXTERNAL_VTK_fmt:BOOL=OFF \
-    -DVTK_MODULE_USE_EXTERNAL_VTK_libharu:BOOL=OFF \
-    -DVTK_MODULE_USE_EXTERNAL_VTK_ioss:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_verdict:BOOL=OFF \
-    -DVTK_MODULE_USE_EXTERNAL_VTK_cgns:BOOL=OFF \
     -DQT_HOST_PATH:STRING="${PREFIX}" \
     "${VTK_ARGS[@]}"
 

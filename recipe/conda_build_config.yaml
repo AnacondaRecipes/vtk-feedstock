@@ -1,10 +1,7 @@
-# MACOSX_SDK_VERSION:        # [osx]
-#   - '12.3'                 # [osx]
+# https://doc.qt.io/qt-6/macos.html
+MACOSX_SDK_VERSION:        # [osx]
+  - '12.3'                 # [osx]
 
-build_variant:
-  - "qt"
-  - "osmesa"  # [linux64]
-  - "egl"  # [linux64]
 replacements:
   all_replacements:
     - tag: 'CMake build metadata'
