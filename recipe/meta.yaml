@@ -42,8 +42,12 @@ requirements:
     - {{ cdt('libx11-devel') }}          # [linux]
     - {{ cdt('libxau') }}                # [linux]
     - {{ cdt('libxcb') }}                # [linux]
+
     - {{ cdt('libxcursor-devel') }}	     # [linux]
+    # The link interface of target "X11::Xcursor" contains:
     - {{ cdt('libxrender-devel') }}      # [linux]
+    - {{ cdt('libxfixes') }}             # [linux]
+
     - {{ cdt('libxdamage') }}            # [linux]
     - {{ cdt('libxext') }}               # [linux]
     - {{ cdt('libxfixes') }}             # [linux]
