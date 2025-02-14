@@ -40,6 +40,7 @@ requirements:
     - {{ cdt('libselinux') }}            # [linux]
     - {{ cdt('libsm-devel') }}           # [linux]
     - {{ cdt('libuuid') }}               # [linux]
+    - {{ cdt('libx11') }}                # [linux]
     - {{ cdt('libx11-devel') }}          # [linux]
     - {{ cdt('libxau') }}                # [linux]
     - {{ cdt('libxau-devel') }}          # [linux]
