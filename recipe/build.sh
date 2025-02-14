@@ -23,31 +23,6 @@ fi
 
 VTK_ARGS=()
 
-if [[ "${target_platform}" == linux-aarch64 ]]; then
-    # Try to locate libGL.so
-    find $PREFIX -name "libGL.so*" || echo "libGL.so not found in PREFIX"
-    find $BUILD_PREFIX -name "libGL.so*" || echo "libGL.so not found in BUILD_PREFIX"
-    
-    # Add additional search paths if needed
-    if [ -d "/usr/lib/aarch64-linux-gnu" ]; then
-        export LD_LIBRARY_PATH="/usr/lib/aarch64-linux-gnu:$LD_LIBRARY_PATH"
-    fi
-    
-    # Add explicit path to libGL.so if found
-    if [ -f "/usr/lib/aarch64-linux-gnu/libGL.so.1" ]; then
-        VTK_ARGS+=(
-            "-DOPENGL_opengl_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libGL.so.1"
-        )
-    elif [ -f "$PREFIX/lib/libGL.so.1" ]; then
-        VTK_ARGS+=(
-            "-DOPENGL_opengl_LIBRARY:FILEPATH=$PREFIX/lib/libGL.so.1"
-        )
-    elif [ -f "$BUILD_PREFIX/lib/libGL.so.1" ]; then
-        VTK_ARGS+=(
-            "-DOPENGL_opengl_LIBRARY:FILEPATH=$BUILD_PREFIX/lib/libGL.so.1"
-        )
-    fi
-fi
 
 # TODO: Remove conditional and indentation (preserved to minimize diff on GH for now)
 if [[ "qt" == "qt" ]]; then
@@ -56,12 +31,38 @@ if [[ "qt" == "qt" ]]; then
         "-DVTK_USE_TK:BOOL=ON"
     )
     if [[ "${target_platform}" == linux-* ]]; then
-        VTK_ARGS+=(
-            "-DVTK_USE_X:BOOL=ON"
-            "-DOPENGL_opengl_LIBRARY:FILEPATH=${PREFIX}/lib/libGL.so.1"
-            "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
-            "-DOPENGL_egl_LIBRARY:FILEPATH=${PREFIX}/lib/libEGL.so.1"
-        )
+        if [[ "${target_platform}" == linux-aarch64 ]]; then
+            # Try to locate libGL.so
+            find $PREFIX -name "libGL.so*" || echo "libGL.so not found in PREFIX"
+            find $BUILD_PREFIX -name "libGL.so*" || echo "libGL.so not found in BUILD_PREFIX"
+            
+            # Add additional search paths if needed
+            if [ -d "/usr/lib/aarch64-linux-gnu" ]; then
+                export LD_LIBRARY_PATH="/usr/lib/aarch64-linux-gnu:$LD_LIBRARY_PATH"
+            fi
+            
+            # Add explicit path to libGL.so if found
+            if [ -f "/usr/lib/aarch64-linux-gnu/libGL.so.1" ]; then
+                VTK_ARGS+=(
+                    "-DOPENGL_opengl_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libGL.so.1"
+                )
+            elif [ -f "$PREFIX/lib/libGL.so.1" ]; then
+                VTK_ARGS+=(
+                    "-DOPENGL_opengl_LIBRARY:FILEPATH=$PREFIX/lib/libGL.so.1"
+                )
+            elif [ -f "$BUILD_PREFIX/lib/libGL.so.1" ]; then
+                VTK_ARGS+=(
+                    "-DOPENGL_opengl_LIBRARY:FILEPATH=$BUILD_PREFIX/lib/libGL.so.1"
+                )
+            fi
+        else
+            VTK_ARGS+=(
+                "-DVTK_USE_X:BOOL=ON"
+                "-DOPENGL_opengl_LIBRARY:FILEPATH=${PREFIX}/lib/libGL.so.1"
+                "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
+                "-DOPENGL_egl_LIBRARY:FILEPATH=${PREFIX}/lib/libEGL.so.1"
+            )
+        fi
     elif [[ "${target_platform}" == osx-* ]]; then
         VTK_ARGS+=(
             "-DVTK_USE_COCOA:BOOL=ON"
