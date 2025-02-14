@@ -1,4 +1,4 @@
-# https://doc.qt.io/qt-6/macos.html
+# TODO: Lower 15.1 to something closer to 12.3 if possible
 MACOSX_SDK_VERSION:        # [osx]
   - '14.5'                 # [osx]
 
