@@ -77,7 +77,7 @@ requirements:
     # at subtle breaks. Given all that, we set the limit to the latest version
     # available when VTK 8.2 was released.
     - tbb
-    - tbb-devel
+    - tbb-devel 2021.8.0
     - libnetcdf {{ libnetcdf }}
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
