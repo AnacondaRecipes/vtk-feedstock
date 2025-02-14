@@ -68,6 +68,7 @@ requirements:
     - {{ cdt('libglvnd') }}              # [linux and (ppc64le | aarch64)]
     - {{ cdt('libglvnd-egl') }}          # [linux and not x86_64]
     - {{ cdt('libglvnd-opengl') }}       # [linux and aarch64]
+    - {{ cdt('libglvnd-devel') }}        # [linux and aarch64]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
   host:
     - python
