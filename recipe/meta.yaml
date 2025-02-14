@@ -41,14 +41,15 @@ requirements:
     - {{ cdt('libuuid') }}               # [linux]
     - {{ cdt('libx11-devel') }}          # [linux]
     - {{ cdt('libxau') }}                # [linux]
+    - {{ cdt('libxau-devel') }}          # [linux]
     - {{ cdt('libxcb') }}                # [linux]
 
     # - {{ cdt('libxcursor-devel') }}	     # [linux]
     # # The link interface of target "X11::Xcursor" contains:
     # - {{ cdt('libxrender-devel') }}      # [linux]
-    # - {{ cdt('libxfixes') }}             # [linux]
 
     - {{ cdt('libxdamage') }}            # [linux]
+    - {{ cdt('libxdamage-devel') }}      # [linux]
     - {{ cdt('libxext') }}               # [linux]
     - {{ cdt('libxfixes') }}             # [linux]
     - {{ cdt('libxt-devel') }}           # [linux]
@@ -57,6 +58,7 @@ requirements:
     - {{ cdt('mesa-libegl-devel') }}     # [linux]
     - {{ cdt('mesa-libegl') }}           # [linux]
     - {{ cdt('mesa-libgbm') }}           # [linux]
+    - {{ cdt('mesa-libgl') }}            # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
   host:
@@ -64,6 +66,8 @@ requirements:
     # VTK Third Party dependencies
     - zlib {{ zlib }}
     - freetype 2.12
+    # for libEGL.so.1:
+    - freeglut  # [linux]
     - hdf5 {{ hdf5 }}
     - libxml2 {{ libxml2 }}
     - libpng {{ libpng }}
@@ -82,7 +86,6 @@ requirements:
     # libnetcdf 4.8.1 is pinned to libcurl 7.88.1 that have Library/lib/libcurl.lib
     # but libcurl 8.12.0 doesn't have libcurl.lib
     - libcurl 8.11.1  # [win]
-    - libcurl         # [not win]
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
     - tk  # [not win]
