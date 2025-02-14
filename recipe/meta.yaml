@@ -79,6 +79,10 @@ requirements:
     - tbb
     - tbb-devel 2021.8.0
     - libnetcdf {{ libnetcdf }}
+    # libnetcdf 4.8.1 is pinned to libcurl 7.88.1 that have Library/lib/libcurl.lib
+    # but libcurl 8.12.0 doesn't have libcurl.lib
+    - libcurl 8.11.1  # [win]
+    - libcurl         # [not win]
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
     - tk  # [not win]
