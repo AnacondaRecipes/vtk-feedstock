@@ -21,11 +21,14 @@ build:
   number: {{ build }}
   string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   # TODO: py>39 is green. Remove py>39 before the final build
-  skip: True  # [s390x or py>39]
+  #skip: True  # [s390x or py>39]
+  skip: True  # [(not linux and aarch64) or py>39]
   ignore_run_exports_from:
     - ffmpeg  # [not win]
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
+  missing_dso_whitelist:
+    - $RPATH/libGL.so.1                # [linux and aarch64]
 
 requirements:
   build:
