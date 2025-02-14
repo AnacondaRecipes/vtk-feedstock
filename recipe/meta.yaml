@@ -43,6 +43,7 @@ requirements:
     - {{ cdt('libxau') }}                # [linux]
     - {{ cdt('libxcb') }}                # [linux]
     - {{ cdt('libxcursor-devel') }}	     # [linux]
+    - {{ cdt('libxrender-devel') }}      # [linux]
     - {{ cdt('libxdamage') }}            # [linux]
     - {{ cdt('libxext') }}               # [linux]
     - {{ cdt('libxfixes') }}             # [linux]
@@ -103,10 +104,7 @@ requirements:
     - loguru
     - nlohmann_json
     # v9.4.1 requires numpy >=1.9 https://gitlab.kitware.com/vtk/vtk/-/blob/v9.4.1/CMake/setup.py.in#L69
-    - numpy >=1.9,<3     # [not win]
-    - numpy >=1.19.5,<3  # [win and py<=39]
-    - numpy >=1.21,<3    # [win and (py>39 and py<311)]
-    - numpy >=1.23,<3    # [win and py>=311]
+    - numpy >=1.24,<3
     - utfcpp
     # Extra dependencies for Web modules:
     # - aiohttp
