@@ -21,7 +21,7 @@ build:
   number: {{ build }}
   string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   # TODO: OSX is green. Remove osx before the final build
-  skip: True  # [osx or s390x or py<312]
+  skip: True  # [osx or s390x or py>39]
   ignore_run_exports_from:
     - ffmpeg  # [not win]
   run_exports:
@@ -43,10 +43,10 @@ requirements:
     - {{ cdt('libxau') }}                # [linux]
     - {{ cdt('libxcb') }}                # [linux]
 
-    - {{ cdt('libxcursor-devel') }}	     # [linux]
-    # The link interface of target "X11::Xcursor" contains:
-    - {{ cdt('libxrender-devel') }}      # [linux]
-    - {{ cdt('libxfixes') }}             # [linux]
+    # - {{ cdt('libxcursor-devel') }}	     # [linux]
+    # # The link interface of target "X11::Xcursor" contains:
+    # - {{ cdt('libxrender-devel') }}      # [linux]
+    # - {{ cdt('libxfixes') }}             # [linux]
 
     - {{ cdt('libxdamage') }}            # [linux]
     - {{ cdt('libxext') }}               # [linux]
@@ -101,6 +101,8 @@ requirements:
     - gl2ps  # [not osx]
     - qt-main =6  # [not ppc64le]
     - xz {{ xz }}
+    - numpy 2.0  # [py<313]
+    - numpy 2.1  # [py>=313]
   run:
     - python
     - {{ pin_compatible('double-conversion') }}
@@ -108,7 +110,7 @@ requirements:
     - loguru
     - nlohmann_json
     # v9.4.1 requires numpy >=1.9 https://gitlab.kitware.com/vtk/vtk/-/blob/v9.4.1/CMake/setup.py.in#L69
-    - numpy >=1.24,<3
+    - numpy
     - utfcpp
     # Extra dependencies for Web modules:
     # - aiohttp
