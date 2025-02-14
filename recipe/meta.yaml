@@ -21,7 +21,8 @@ build:
   number: {{ build }}
   string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   # TODO: OSX is green. Remove osx before the final build
-  skip: True  # [osx or s390x or py>39]
+  #skip: True  # [osx or s390x or py>39]
+  skip: True  # [(not linux and aarch64) or py>39]
   ignore_run_exports_from:
     - ffmpeg  # [not win]
   run_exports:
@@ -60,6 +61,9 @@ requirements:
     - {{ cdt('mesa-libgbm') }}           # [linux]
     - {{ cdt('mesa-libgl') }}            # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
+    - {{ cdt('libglvnd-glx') }}          # [linux and (ppc64le | aarch64)]
+    - {{ cdt('libglvnd') }}              # [linux and (ppc64le | aarch64)]
+    - {{ cdt('libglvnd-egl') }}               # [linux and not x86_64]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
   host:
     - python
