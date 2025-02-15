@@ -121,6 +121,7 @@ requirements:
   run:
     - python
     - {{ pin_compatible('double-conversion') }}
+    - freeglut  # [linux]
     - glad2
     - loguru
     - nlohmann_json
