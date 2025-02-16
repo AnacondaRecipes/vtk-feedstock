@@ -5,3 +5,4 @@ build_parameters:
 
 channels:
   - https://staging.continuum.io/prefect/fs/glad-feedstock/pr1/04523de
+  - https://staging.continuum.io/prefect/fs/curl-feedstock/pr38/eab1591

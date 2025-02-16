@@ -21,8 +21,8 @@ build:
   number: {{ build }}
   string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   # TODO: py>39 is green. Remove py>39 before the final build
-  #skip: True  # [s390x or py>39]
-  skip: True  # [not aarch64 or py>39]
+  skip: True  # [s390x or py>39]
+  #skip: True  # [not aarch64 or py>39]
   ignore_run_exports_from:
     - ffmpeg  # [not win]
   run_exports:
@@ -52,9 +52,8 @@ requirements:
     - {{ cdt('libxt-devel') }}           # [linux]
     - {{ cdt('libxxf86vm') }}            # [linux]
     - {{ cdt('mesa-dri-drivers') }}      # [linux]
-    #- {{ cdt('mesa-libegl-devel') }}     # [linux]
+    - {{ cdt('mesa-libegl-devel') }}     # [linux]
     - {{ cdt('mesa-libegl') }}           # [linux]
-    - {{ cdt('mesa-libEGL-devel') }}     # [linux]
     - {{ cdt('mesa-libgbm') }}           # [linux]
     - {{ cdt('mesa-libgl') }}            # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
@@ -69,7 +68,7 @@ requirements:
     # VTK Third Party dependencies
     - zlib {{ zlib }}
     - freetype 2.12
-    # for libEGL.so.1:
+    # for libEGL.so.1 on linux:
     - freeglut  # [linux]
     - hdf5 {{ hdf5 }}
     - libxml2 {{ libxml2 }}
@@ -81,14 +80,14 @@ requirements:
     # Limit TBB version. The oneAPI (2021.*) release removed the `tbb_stddef.h`
     # header, which causes configure-time errors. The 2020 release is probably
     # safe to use but generates *tons* of deprecation warnings that (may) hint
-    # at subtle breaks. Given all that, we set the limit to the latest version
-    # available when VTK 8.2 was released.
+    # at subtle breaks.
+    # v2022.0.0 breaks things.
     - tbb
     - tbb-devel 2021.8.0
     - libnetcdf {{ libnetcdf }}
     # libnetcdf 4.8.1 is pinned to libcurl 7.88.1 that have Library/lib/libcurl.lib
     # but libcurl 8.12.0 doesn't have libcurl.lib
-    - libcurl 8.11.1  # [win]
+    #- libcurl 8.11.1  # [win]
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
     - tk  # [not win]
