@@ -27,8 +27,6 @@ build:
     - ffmpeg  # [not win]
   run_exports:
     - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
-  missing_dso_whitelist:
-    - $RPATH/libGL.so.1                # [linux and aarch64]
 
 requirements:
   build:
@@ -56,13 +54,13 @@ requirements:
     - {{ cdt('mesa-dri-drivers') }}      # [linux]
     #- {{ cdt('mesa-libegl-devel') }}     # [linux]
     - {{ cdt('mesa-libegl') }}           # [linux]
-    - {{ cdt('mesa-libEGL-devel') }}       # [linux]
+    - {{ cdt('mesa-libEGL-devel') }}     # [linux]
     - {{ cdt('mesa-libgbm') }}           # [linux]
     - {{ cdt('mesa-libgl') }}            # [linux]
     - {{ cdt('mesa-libgl-devel') }}      # [linux]
-    - {{ cdt('libglvnd-glx') }}          # [linux and (ppc64le | aarch64)]
-    - {{ cdt('libglvnd') }}              # [linux and (ppc64le | aarch64)]
-    - {{ cdt('libglvnd-egl') }}          # [linux and not x86_64]
+    - {{ cdt('libglvnd-glx') }}          # [linux and aarch64]
+    - {{ cdt('libglvnd') }}              # [linux and aarch64]
+    - {{ cdt('libglvnd-egl') }}          # [linux and aarch64]
     - {{ cdt('libglvnd-opengl') }}       # [linux and aarch64]
     - {{ cdt('libglvnd-devel') }}        # [linux and aarch64]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
@@ -117,7 +115,6 @@ requirements:
   run:
     - python
     - {{ pin_compatible('double-conversion') }}
-    - freeglut  # [linux]
     - glad2
     - loguru
     - nlohmann_json
@@ -163,7 +160,9 @@ test:
     - vtkmodules.vtkInfovisCore
     - vtkmodules.vtkRenderingCore
     - vtkmodules.vtkViewsCore
-    - vtkmodules.vtkRenderingQt
+    # An error on linux-aarch64:
+    # ImportError: libEGL.so.1: cannot open shared object file: No such file or directory
+    - vtkmodules.vtkRenderingQt  # [not linux and aarch64]
     - vtkmodules.vtkRenderingVolume
     - vtkmodules.vtkInteractionWidgets
     - vtkmodules.vtkWebCore
