@@ -8,7 +8,7 @@ package:
   version: {{ version }}
 
 source:
-  url: http://www.vtk.org/files/release/{{ minor_version }}/VTK-{{ version }}.tar.gz
+  url: https://www.vtk.org/files/release/{{ minor_version }}/VTK-{{ version }}.tar.gz
   sha256: c253b0c8d002aaf98871c6d0cb76afc4936c301b72358a08d5f3f72ef8bc4529
   patches:
     - patches/fix-threads-windows.patch  # [win]
@@ -69,7 +69,7 @@ requirements:
     - zlib {{ zlib }}
     - freetype 2.12
     # for libEGL.so.1 on linux:
-    - freeglut  # [linux]
+    - freeglut 3.4.0  # [linux]
     - hdf5 {{ hdf5 }}
     - libxml2 {{ libxml2 }}
     - libpng {{ libpng }}
@@ -85,12 +85,9 @@ requirements:
     - tbb
     - tbb-devel 2021.8.0
     - libnetcdf {{ libnetcdf }}
-    # libnetcdf 4.8.1 is pinned to libcurl 7.88.1 that have Library/lib/libcurl.lib
-    # but libcurl 8.12.0 doesn't have libcurl.lib
-    #- libcurl 8.11.1  # [win]
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
-    - tk  # [not win]
+    - tk {{ tk }}  # [not win]
     - ffmpeg 6.1.1
     - utfcpp 3.2.1
     - eigen 3.4.0
