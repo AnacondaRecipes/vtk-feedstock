@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Building ${PKG_NAME}."
 
-set -x
+set -ex
 
 BUILD_CONFIG=Release
 
@@ -28,46 +28,67 @@ VTK_ARGS+=(
     "-DVTK_USE_TK:BOOL=ON"
 )
 if [[ "${target_platform}" == linux-* ]]; then
-    if [[ "${target_platform}" == linux-aarch64 ]]; then
-        # Try to locate libGL.so
-        find $PREFIX -name "libGL.so*" || echo "libGL.so not found in PREFIX"
-        find $BUILD_PREFIX -name "libGL.so*" || echo "libGL.so not found in BUILD_PREFIX"
-        
-        # Add additional search paths if needed
-        if [ -d "/usr/lib/aarch64-linux-gnu" ]; then
-            export LD_LIBRARY_PATH="/usr/lib/aarch64-linux-gnu:$LD_LIBRARY_PATH"
-        fi
-        
-        # Add explicit path to libGL.so if found
-        if [ -f "/usr/lib/aarch64-linux-gnu/libGL.so.1" ]; then
-            VTK_ARGS+=(
-                "-DOPENGL_opengl_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libGL.so.1"
-            )
-        elif [ -f "$PREFIX/lib/libGL.so.1" ]; then
-            VTK_ARGS+=(
-                "-DOPENGL_opengl_LIBRARY:FILEPATH=$PREFIX/lib/libGL.so.1"
-            )
-        elif [ -f "$BUILD_PREFIX/lib/libGL.so.1" ]; then
-            VTK_ARGS+=(
-                "-DOPENGL_opengl_LIBRARY:FILEPATH=$BUILD_PREFIX/lib/libGL.so.1"
-            )
-        fi
-    else
-        VTK_ARGS+=(
-            "-DVTK_USE_X:BOOL=ON"
-            "-DOPENGL_opengl_LIBRARY:FILEPATH=${PREFIX}/lib/libGL.so.1"
-            "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
-            "-DOPENGL_egl_LIBRARY:FILEPATH=${PREFIX}/lib/libEGL.so.1"
-        )
+    # Make sure libEGL can be found during both build and runtime
+    if [[ -d "${PREFIX}/lib" ]]; then
+        export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH}"
     fi
+
+    # Try to locate libGL.so
+    find $PREFIX -name "libGL.so*" || echo "libGL.so not found in PREFIX"
+    find $BUILD_PREFIX -name "libGL.so*" || echo "libGL.so not found in BUILD_PREFIX"
+    find $PREFIX -name "libEGL.so*" || echo "libEGL.so not found in PREFIX"
+    
+    # For all Linux platforms
+    VTK_ARGS+=(
+        "-DVTK_USE_X:BOOL=ON"
+        "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
+    )
+
+    # Set GL and EGL paths explicitly if found
+    if [ -f "$PREFIX/lib/libGL.so.1" ]; then
+        VTK_ARGS+=("-DOPENGL_opengl_LIBRARY:FILEPATH=$PREFIX/lib/libGL.so.1")
+    fi
+    
+    if [ -f "$PREFIX/lib/libEGL.so.1" ]; then
+        VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$PREFIX/lib/libEGL.so.1")
+    fi
+
+    # Check system locations for Linux
+    if [ ! -f "$PREFIX/lib/libEGL.so.1" ]; then
+        # Try to find libEGL.so in system locations
+        SYSTEM_LIBEGL=$(find /usr/lib* -name "libEGL.so.1" | head -1)
+        if [ -n "$SYSTEM_LIBEGL" ]; then
+            echo "Found system libEGL.so.1 at $SYSTEM_LIBEGL"
+            VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$SYSTEM_LIBEGL")
+            # Add the directory to LD_LIBRARY_PATH
+            export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBEGL):$LD_LIBRARY_PATH"
+        fi
+    fi
+    
+    # Same for libGL.so if not found in PREFIX
+    if [ ! -f "$PREFIX/lib/libGL.so.1" ]; then
+        SYSTEM_LIBGL=$(find /usr/lib* -name "libGL.so.1" | head -1)
+        if [ -n "$SYSTEM_LIBGL" ]; then
+            echo "Found system libGL.so.1 at $SYSTEM_LIBGL"
+            VTK_ARGS+=("-DOPENGL_opengl_LIBRARY:FILEPATH=$SYSTEM_LIBGL")
+            # Add the directory to LD_LIBRARY_PATH
+            export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBGL):$LD_LIBRARY_PATH"
+        fi
+    fi
+
+    # Make sure all required Mesa libraries are in LD_LIBRARY_PATH
+    echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
+
 elif [[ "${target_platform}" == osx-* ]]; then
     VTK_ARGS+=(
         "-DVTK_USE_COCOA:BOOL=ON"
         "-DCMAKE_OSX_SYSROOT:PATH=${CONDA_BUILD_SYSROOT}"
         "-DVTK_MODULE_USE_EXTERNAL_VTK_gl2ps:BOOL=OFF"
     )
+    # incompatible function pointers become errors in clang >=16
+    export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types"
+    export CXXFLAGS="${CXXFLAGS} -Wno-incompatible-pointer-types"
 fi
-
 
 if [[ "$target_platform" != "linux-ppc64le" ]]; then
     VTK_ARGS+=(
@@ -76,11 +97,6 @@ if [[ "$target_platform" != "linux-ppc64le" ]]; then
     )
 fi
 
-if [[ "$target_platform" == osx-* ]]; then
-    # incompatible function pointers become errors in clang >=16
-    export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types"
-    export CXXFLAGS="${CXXFLAGS} -Wno-incompatible-pointer-types"
-fi
 
 if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
   (
