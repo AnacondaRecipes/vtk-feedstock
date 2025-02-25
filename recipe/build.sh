@@ -48,11 +48,21 @@ if [[ "${target_platform}" == linux-* ]]; then
     if [ -f "$PREFIX/lib/libGL.so.1" ]; then
         VTK_ARGS+=("-DOPENGL_opengl_LIBRARY:FILEPATH=$PREFIX/lib/libGL.so.1")
     fi
+    # Make sure GL libraries are available
+    if [ ! -f "$PREFIX/lib/libGL.so.1" ]; then
+        SYSTEM_LIBGL=$(find /usr/lib* -name "libGL.so.1" | head -1)
+        if [ -n "$SYSTEM_LIBGL" ]; then
+            echo "Found system libGL.so.1 at $SYSTEM_LIBGL"
+            VTK_ARGS+=("-DOPENGL_opengl_LIBRARY:FILEPATH=$SYSTEM_LIBGL")
+            # Add the directory to LD_LIBRARY_PATH
+            export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBGL):$LD_LIBRARY_PATH"
+        fi
+    fi
     
+
     if [ -f "$PREFIX/lib/libEGL.so.1" ]; then
         VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$PREFIX/lib/libEGL.so.1")
     fi
-
     # Make sure EGL libraries are available
     if [ ! -f "${PREFIX}/lib/libEGL.so.1" ]; then
         # Try to find libEGL.so in system locations
@@ -72,19 +82,6 @@ if [[ "${target_platform}" == linux-* ]]; then
             export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
         else
             echo "WARNING: Couldn't find libEGL.so.1"
-        fi
-    fi
-fi
-
-    
-    # Same for libGL.so if not found in PREFIX
-    if [ ! -f "$PREFIX/lib/libGL.so.1" ]; then
-        SYSTEM_LIBGL=$(find /usr/lib* -name "libGL.so.1" | head -1)
-        if [ -n "$SYSTEM_LIBGL" ]; then
-            echo "Found system libGL.so.1 at $SYSTEM_LIBGL"
-            VTK_ARGS+=("-DOPENGL_opengl_LIBRARY:FILEPATH=$SYSTEM_LIBGL")
-            # Add the directory to LD_LIBRARY_PATH
-            export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBGL):$LD_LIBRARY_PATH"
         fi
     fi
 
