@@ -2,7 +2,38 @@ import pkg_resources
 import vtk
 import sys
 import os
-
+from vtk import vtkChartsCore
+from vtk import vtkCommonCore
+from vtk import vtkFiltersCore
+from vtk import vtkFiltersGeneric
+from vtk import vtkGeovisCore
+from vtk import vtkFiltersHybrid
+from vtk import vtkIOCore
+from vtk import vtkImagingCore
+from vtk import vtkInfovisCore
+from vtk import vtkRenderingCore
+from vtk import vtkViewsCore
+from vtk import vtkRenderingVolume
+from vtk import vtkInteractionWidgets
+from vtk import vtkWebGLExporter
+import vtkmodules
+from vtkmodules import vtkChartsCore
+from vtkmodules import vtkCommonCore
+from vtkmodules import vtkFiltersCore
+from vtkmodules import vtkFiltersGeneric
+from vtkmodules import vtkGeovisCore
+from vtkmodules import vtkFiltersHybrid
+from vtkmodules import vtkIOCore
+from vtkmodules import vtkImagingCore
+from vtkmodules import vtkInfovisCore
+from vtkmodules import vtkRenderingCore
+from vtkmodules import vtkViewsCore
+from vtkmodules import vtkRenderingQt
+from vtkmodules import vtkRenderingVolume
+from vtkmodules import vtkInteractionWidgets
+from vtkmodules import vtkWebCore
+from vtkmodules import web
+from vtkmodules import web.utils
 # If this fails it raises a DistributionNotFound exception
 pkg_resources.get_distribution('vtk')
 
