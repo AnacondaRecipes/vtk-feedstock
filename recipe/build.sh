@@ -72,6 +72,7 @@ if [[ "${target_platform}" == linux-* ]]; then
             export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
         else
             echo "WARNING: Couldn't find libEGL.so.1"
+        fi
     fi
 fi
 
