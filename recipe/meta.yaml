@@ -172,6 +172,7 @@ test:
     - pip
     - setuptools
   commands:
+    - export QT_XCB_GL_INTEGRATION=none  # [linux]
     - pip check
     - test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1  # [unix]
     - pip list | findstr "vtk"  # [win]
