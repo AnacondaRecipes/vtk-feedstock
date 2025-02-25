@@ -139,6 +139,9 @@ test:
     - setuptools
   commands:
     - export QT_XCB_GL_INTEGRATION=none  # [linux]
+    # Add runtime path of libEGL.so.1 so Qt libraries can find it as they're loaded in.
+    # This must be done before the python interpreter starts up.
+    - export LD_LIBRARY_PATH="${PREFIX}/${BUILD/conda_cos7/conda}/sysroot/usr/lib64:${LD_LIBRARY_PATH}"  # [linux]
     - pip check
     - test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1  # [unix]
     - pip list | findstr "vtk"  # [win]
