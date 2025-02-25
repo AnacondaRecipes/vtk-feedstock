@@ -33,7 +33,7 @@ from vtkmodules import vtkRenderingVolume
 from vtkmodules import vtkInteractionWidgets
 from vtkmodules import vtkWebCore
 from vtkmodules import web
-from vtkmodules import web.utils
+from vtkmodules.web import utils
 # If this fails it raises a DistributionNotFound exception
 pkg_resources.get_distribution('vtk')
 
