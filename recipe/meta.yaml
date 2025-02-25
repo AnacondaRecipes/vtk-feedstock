@@ -188,6 +188,7 @@ test:
     - test -f $PREFIX/lib/libvtkRenderingQt-{{ minor_version }}${SHLIB_EXT}  # [not win]
     - if not exist %PREFIX%\\Library\\lib\\vtkRenderingQt-{{ minor_version }}.lib exit 1  # [win]
     - if not exist %PREFIX%\\Library\\bin\\vtkRenderingQt-{{ minor_version }}.dll exit 1  # [win]
+    - python test_vtk.py
 
 about:
   home: https://vtk.org/
