@@ -33,7 +33,7 @@ if [[ "${target_platform}" == linux-* ]]; then
         export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH}"
     fi
 
-    # Try to locate libGL.so
+    # Try to locate libGL.so and libEGL.so
     find $PREFIX -name "libGL.so*" || echo "libGL.so not found in PREFIX"
     find $BUILD_PREFIX -name "libGL.so*" || echo "libGL.so not found in BUILD_PREFIX"
     find $PREFIX -name "libEGL.so*" || echo "libEGL.so not found in PREFIX"
@@ -53,17 +53,19 @@ if [[ "${target_platform}" == linux-* ]]; then
         VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$PREFIX/lib/libEGL.so.1")
     fi
 
-    # Check system locations for Linux
-    if [ ! -f "$PREFIX/lib/libEGL.so.1" ]; then
-        # Try to find libEGL.so in system locations
-        SYSTEM_LIBEGL=$(find /usr/lib* -name "libEGL.so.1" | head -1)
-        if [ -n "$SYSTEM_LIBEGL" ]; then
-            echo "Found system libEGL.so.1 at $SYSTEM_LIBEGL"
-            VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$SYSTEM_LIBEGL")
-            # Add the directory to LD_LIBRARY_PATH
-            export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBEGL):$LD_LIBRARY_PATH"
-        fi
+    # Make sure EGL libraries are available
+    if [ ! -f "${PREFIX}/lib/libEGL.so.1" ]; then
+        # Hack to help the gn build tool find alsa during build. We can't add ${BUILD_PREFIX}/${HOST}/sysroot/lib64 to the
+        # LD_LIBRARY_PATH below because it causes segfaults in many system applications.
+        ln -s ../../lib64/libEGL.so.1 ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1
+        echo "Created symlink from '../../lib64/libEGL.so.1' to ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1"
+        # Hack to help the gn build tool find CDT pkgconfig and libraries during build. LD_LIBRARY_PATH is used rather than
+        # LIBRARY_PATH because we need to run during the build and require libs from
+        # our CDT packages.
+        export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
     fi
+fi
+
     
     # Same for libGL.so if not found in PREFIX
     if [ ! -f "$PREFIX/lib/libGL.so.1" ]; then
@@ -79,6 +81,12 @@ if [[ "${target_platform}" == linux-* ]]; then
     # Make sure all required Mesa libraries are in LD_LIBRARY_PATH
     echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 
+    # TODO: generation of vtkmodules/vtkCommonCore.pyi causes an error on linux-64 and linux-aarch64:
+    # FAILED: lib/python3.9/site-packages/vtkmodules/vtkCommonCore.pyi lib/python3.9/site-packages/vtkmodules/vtkWebCore.pyi
+    # ImportError: libEGL.so.1: cannot open shared object file: No such file or directory.
+    # 2025/2/25: The patch 'patches/11929_disable_class_overrides_pyi.patch' doesn't fix it for that pyi file. So disable it now
+    CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
+
 elif [[ "${target_platform}" == osx-* ]]; then
     VTK_ARGS+=(
         "-DVTK_USE_COCOA:BOOL=ON"
@@ -88,6 +96,8 @@ elif [[ "${target_platform}" == osx-* ]]; then
     # incompatible function pointers become errors in clang >=16
     export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types"
     export CXXFLAGS="${CXXFLAGS} -Wno-incompatible-pointer-types"
+
+    CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
 fi
 
 if [[ "$target_platform" != "linux-ppc64le" ]]; then
@@ -123,12 +133,16 @@ if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
   CMAKE_ARGS="${CMAKE_ARGS} -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE=0 -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE__TRYRUN_OUTPUT="
 fi
 
-# Only build pyi files when natively compiling
-if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
-  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
-else
-  CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
-fi
+# # Only build pyi files when natively compiling
+# if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
+#   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
+# else
+#   # TODO: generation of vtkmodules/vtkCommonCore.pyi causes an error on linux-64 and linux-aarch64:
+#   # FAILED: lib/python3.9/site-packages/vtkmodules/vtkCommonCore.pyi lib/python3.9/site-packages/vtkmodules/vtkWebCore.pyi
+#   # ImportError: libEGL.so.1: cannot open shared object file: No such file or directory.
+#   # 2025/2/25: The patch 'patches/11929_disable_class_overrides_pyi.patch' doesn't fix it. So disable it now
+#   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
+# fi
 
 mkdir build
 cd build || exit
