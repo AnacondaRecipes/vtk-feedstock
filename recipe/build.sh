@@ -55,14 +55,23 @@ if [[ "${target_platform}" == linux-* ]]; then
 
     # Make sure EGL libraries are available
     if [ ! -f "${PREFIX}/lib/libEGL.so.1" ]; then
-        # Hack to help the gn build tool find alsa during build. We can't add ${BUILD_PREFIX}/${HOST}/sysroot/lib64 to the
-        # LD_LIBRARY_PATH below because it causes segfaults in many system applications.
-        ln -s ../../lib64/libEGL.so.1 ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1
-        echo "Created symlink from '../../lib64/libEGL.so.1' to ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1"
-        # Hack to help the gn build tool find CDT pkgconfig and libraries during build. LD_LIBRARY_PATH is used rather than
-        # LIBRARY_PATH because we need to run during the build and require libs from
-        # our CDT packages.
-        export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
+        # Try to find libEGL.so in system locations
+        SYSTEM_LIBEGL=$(find /usr/lib* -name "libEGL.so.1" | head -1)
+
+        if [ -n "$SYSTEM_LIBEGL" ]; then
+            echo "Found system libEGL.so.1 at $SYSTEM_LIBEGL"
+            VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$SYSTEM_LIBEGL")
+            # Add the directory to LD_LIBRARY_PATH
+            export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBEGL):$LD_LIBRARY_PATH"
+        elif [ -n "${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1" ]; then
+            echo "Found libEGL.so.1 at ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1"
+            VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1")
+            # Hack to help the gn build tool find CDT pkgconfig and libraries during build. LD_LIBRARY_PATH is used rather than
+            # LIBRARY_PATH because we need to run during the build and require libs from
+            # our CDT packages.
+            export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
+        else
+            echo "WARNING: Couldn't find libEGL.so.1"
     fi
 fi
 
