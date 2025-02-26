@@ -65,6 +65,11 @@ requirements:
     - {{ cdt('libglvnd-opengl') }}       # [linux and aarch64]
     - {{ cdt('libglvnd-devel') }}        # [linux and aarch64]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('xcb-util-devel') }}             # [linux]
+    - {{ cdt('xcb-util-image-devel') }}       # [linux]
+    - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
+    - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
+    - {{ cdt('xcb-util-wm-devel') }}          # [linux]
   host:
     - python
     # VTK Third Party dependencies
@@ -163,6 +168,11 @@ test:
     - {{ cdt('libglvnd-opengl') }}       # [linux and aarch64]
     - {{ cdt('libglvnd-devel') }}        # [linux and aarch64]
     - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('xcb-util-devel') }}             # [linux]
+    - {{ cdt('xcb-util-image-devel') }}       # [linux]
+    - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
+    - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
+    - {{ cdt('xcb-util-wm-devel') }}          # [linux]
 
 about:
   home: https://vtk.org/
