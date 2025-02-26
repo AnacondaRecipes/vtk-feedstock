@@ -1,6 +1,5 @@
-import importlib
-import sys
 import os
+from importlib.metadata import version
 
 print("import: 'vtk'")
 import vtk
@@ -88,7 +87,6 @@ try:
     from vtkmodules import vtkRenderingQt
 except ImportError as e:
     print(e)
-    #exit(1)
 
 print("import: 'from vtkmodules import vtkRenderingVolume'")
 from vtkmodules import vtkRenderingVolume
@@ -106,11 +104,13 @@ try:
     print("import: 'from vtkmodules.web import utils'")
     from vtkmodules.web import utils
 except ImportError as e:
-    print(f"Error importing web modules: {e}")
     # Web import is non-critical, continue
-print("VTK imports successful, testing core features...")
+    print(f"Error importing web modules: {e}")
 
-importlib.metadata.version('vtk')
+print("All VTK imports successful, testing core features...")
+
+vtk_version = version('vtk')
+print(f"Detected VTK version: {vtk_version}")
 
 # As of VTK 9.4, Linux and Windows should automatically fall back to using OSMesa
 # if there is no valid display or OpenGL is too old, so tests should work on all OSes.
