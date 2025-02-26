@@ -2,7 +2,7 @@
 
 set -ex
 
-echo "Testing ${PKG_NAME}."
+echo "Testing ${PKG_NAME}-${PKG_VERSION}..."
 
 # Add runtime path of libEGL.so.1 so Qt libraries can find it as they're loaded in.
 # This must be done before the python interpreter starts up.
@@ -25,10 +25,10 @@ ${PYTHON} -m pip check
 test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1
 
 # e.g., PKG_VERSION_MINOR is 9.4
-PKG_VERSION_MINOR=${PKG_VERSION::-2}
+PKG_VERSION_MINOR=${PKG_VERSION%??}
+echo "$PKG_VERSION_MINOR"
 
 test -f $PREFIX/lib/libvtkGUISupportQt-${PKG_VERSION_MINOR}${SHLIB_EXT}
-
 test -f $PREFIX/lib/libvtkRenderingQt-${PKG_VERSION_MINOR}${SHLIB_EXT}
 
 
