@@ -140,17 +140,6 @@ if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
   CMAKE_ARGS="${CMAKE_ARGS} -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE=0 -DXDMF_REQUIRE_LARGE_FILE_SUPPORT_EXITCODE__TRYRUN_OUTPUT="
 fi
 
-# # Only build pyi files when natively compiling
-# if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
-#   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
-# else
-#   # TODO: generation of vtkmodules/vtkCommonCore.pyi causes an error on linux-64 and linux-aarch64:
-#   # FAILED: lib/python3.9/site-packages/vtkmodules/vtkCommonCore.pyi lib/python3.9/site-packages/vtkmodules/vtkWebCore.pyi
-#   # ImportError: libEGL.so.1: cannot open shared object file: No such file or directory.
-#   # 2025/2/25: The patch 'patches/11929_disable_class_overrides_pyi.patch' doesn't fix it. So disable it now
-#   CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=OFF"
-# fi
-
 mkdir build
 cd build || exit
 
