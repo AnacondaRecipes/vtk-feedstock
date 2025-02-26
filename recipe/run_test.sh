@@ -20,12 +20,14 @@ if [[ "$(uname)" == "Linux" ]]; then
 
 fi
 
-
 ${PYTHON} -m pip check
 test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1
 
-test -f $PREFIX/lib/libvtkGUISupportQt-${PKG_VERSION}${SHLIB_EXT}
+# e.g., PKG_VERSION_MINOR is 9.4
+PKG_VERSION_MINOR=${PKG_VERSION::-2}
 
-test -f $PREFIX/lib/libvtkRenderingQt-${PKG_VERSION}${SHLIB_EXT}
+test -f $PREFIX/lib/libvtkGUISupportQt-${PKG_VERSION_MINOR}${SHLIB_EXT}
+
+test -f $PREFIX/lib/libvtkRenderingQt-${PKG_VERSION_MINOR}${SHLIB_EXT}
 
 ${PYTHON} ${RECIPE_DIR}/test_vtk.py
