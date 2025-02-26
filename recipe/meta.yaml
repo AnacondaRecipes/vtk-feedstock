@@ -141,7 +141,17 @@ test:
     - export QT_XCB_GL_INTEGRATION=none  # [linux]
     # Add runtime path of libEGL.so.1 so Qt libraries can find it as they're loaded in.
     # This must be done before the python interpreter starts up.
-    - export LD_LIBRARY_PATH="${PREFIX}/${BUILD/conda_cos7/conda}/sysroot/usr/lib64:${LD_LIBRARY_PATH}"  # [linux]
+    - |
+      if [[ "$(uname)" == "Linux" ]]; then
+        for loc in $PREFIX/lib $PREFIX/x86_64-conda-linux-gnu/sysroot/usr/lib64 $PREFIX/sysroot/usr/lib64 /usr/lib64 /usr/lib/x86_64-linux-gnu; do
+          if [ -d "$loc" ]; then
+            export LD_LIBRARY_PATH="$loc:$LD_LIBRARY_PATH"
+          fi
+        done
+        echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
+        echo "Looking for libEGL.so.1:"
+        find $PREFIX -name "libEGL.so*" || echo "No libEGL.so found in PREFIX"
+      fi  # [linux]
     - pip check
     - test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1  # [unix]
     - pip list | findstr "vtk"  # [win]
