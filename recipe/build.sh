@@ -76,7 +76,7 @@ if [[ "${target_platform}" == linux-* ]]; then
         elif [ -n "${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1" ]; then
             echo "Found libEGL.so.1 at ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1"
             VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1")
-            # Hack to help the gn build tool find CDT pkgconfig and libraries during build. LD_LIBRARY_PATH is used rather than
+            # Hack to help the build tool find CDT pkgconfig and libraries during build. LD_LIBRARY_PATH is used rather than
             # LIBRARY_PATH because we need to run during the build and require libs from
             # our CDT packages.
             export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
@@ -91,7 +91,7 @@ if [[ "${target_platform}" == linux-* ]]; then
     # TODO: generation of vtkmodules/vtkCommonCore.pyi causes an error on linux-64 and linux-aarch64:
     # FAILED: lib/python3.9/site-packages/vtkmodules/vtkCommonCore.pyi lib/python3.9/site-packages/vtkmodules/vtkWebCore.pyi
     # ImportError: libEGL.so.1: cannot open shared object file: No such file or directory.
-    # 2025/2/25: The patch 'patches/11929_disable_class_overrides_pyi.patch' doesn't fix it for that pyi file. So disable it now
+    # 2025/2/25: The patch 'patches/11929_disable_class_overrides_pyi.patch' seems doesn't fix it for that pyi file.
     CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
 
 elif [[ "${target_platform}" == osx-* ]]; then
