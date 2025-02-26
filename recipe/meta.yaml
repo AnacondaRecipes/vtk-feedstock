@@ -24,7 +24,7 @@ build:
   string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   # TODO: py>39 is green. Remove py>39 before the final build
   # osx and win are green. Skip not linux
-  skip: True  # [s390x or py>39 or not linux]
+  skip: True  # [s390x or py>39]
   ignore_run_exports_from:
     - ffmpeg  # [not win]
   run_exports:
@@ -76,6 +76,7 @@ requirements:
     - libxcb 1.15                  # [linux]
     - zlib {{ zlib }}
     - freetype 2.12
+    - fmt 9
     # for libEGL.so.1 on linux:
     - freeglut 3.4.0  # [linux]
     - hdf5 {{ hdf5 }}
