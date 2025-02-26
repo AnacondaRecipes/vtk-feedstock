@@ -2,7 +2,7 @@
 
 set -ex
 
-echo "Testing ${PKG_NAME}-${PKG_VERSION}..."
+echo "Testing ${PKG_NAME}-${PKG_VERSION} ..."
 
 # Add runtime path of libEGL.so.1 so Qt libraries can find it as they're loaded in.
 # This must be done before the python interpreter starts up.
@@ -40,7 +40,7 @@ if [[ "$(uname)" == "Linux" ]]; then
 		exit 0
 	}
 else
-	"${PYTHON} ${RECIPE_DIR}/test_vtk.py" || {
+	"${PYTHON}" test_vtk.py || {
 		echo "Test failed with exit code $?"
 		echo "This could be due to missing display or OpenGL capabilities in the CI environment"
 		echo "Continuing as core imports were successful"

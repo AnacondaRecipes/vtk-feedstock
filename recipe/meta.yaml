@@ -23,7 +23,7 @@ build:
   number: {{ build }}
   string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   # TODO: py>39 is green. Remove py>39 before the final build
-  # osx and win are green. Skip not linux
+  # osx and win are green.
   skip: True  # [s390x or py>39]
   ignore_run_exports_from:
     - ffmpeg  # [not win]
@@ -108,7 +108,9 @@ requirements:
     - libtheora 1
     - nlohmann_json 3.11.2
     - proj {{ proj }}
-    - loguru
+    # TODO: Remove loguru. It's a python package but vtk relies on C++ logging library,
+    # see https://gitlab.kitware.com/vtk/vtk/-/blob/v9.4.1/ThirdParty/loguru/vtkloguru/README.md
+    #- loguru
     - sqlite {{ sqlite }}
     # Until this is solved:
     # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
@@ -122,7 +124,7 @@ requirements:
     - python
     - {{ pin_compatible('double-conversion') }}
     - glad2
-    - loguru
+    #- loguru
     - nlohmann_json
     # v9.4.1 requires numpy >=1.9 https://gitlab.kitware.com/vtk/vtk/-/blob/v9.4.1/CMake/setup.py.in#L69
     - numpy
