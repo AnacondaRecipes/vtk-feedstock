@@ -1,39 +1,111 @@
 import pkg_resources
-import vtk
 import sys
 import os
+
+print("import: 'vtk'")
+import vtk
+
+print("import: 'from vtk import vtkChartsCore'")
 from vtk import vtkChartsCore
+
+print("import: 'from vtk import vtkCommonCore'")
 from vtk import vtkCommonCore
+
+print("import: 'from vtk import vtkFiltersCore'")
 from vtk import vtkFiltersCore
+
+print("import: 'from vtk import vtkFiltersGeneric'")
 from vtk import vtkFiltersGeneric
+
+print("import: 'from vtk import vtkGeovisCore'")
 from vtk import vtkGeovisCore
+
+print("import: 'from vtk import vtkFiltersHybrid'")
 from vtk import vtkFiltersHybrid
+
+print("import: 'from vtk import vtkIOCore'")
 from vtk import vtkIOCore
+
+print("import: 'from vtk import vtkImagingCore'")
 from vtk import vtkImagingCore
+
+print("import: 'from vtk import vtkInfovisCore'")
 from vtk import vtkInfovisCore
+
+print("import: 'from vtk import vtkRenderingCore'")
 from vtk import vtkRenderingCore
+
+print("import: 'from vtk import vtkViewsCore'")
 from vtk import vtkViewsCore
+
+print("import: 'from vtk import vtkRenderingVolume'")
 from vtk import vtkRenderingVolume
+
+print("import: 'from vtk import vtkInteractionWidgets'")
 from vtk import vtkInteractionWidgets
+
+print("import: 'from vtk import vtkWebGLExporter'")
 from vtk import vtkWebGLExporter
+
+print("import: 'vtkmodules'")
 import vtkmodules
+
+print("import: 'from vtkmodules import vtkChartsCore'")
 from vtkmodules import vtkChartsCore
+
+print("import: 'from vtkmodules import vtkCommonCore'")
 from vtkmodules import vtkCommonCore
+
+print("import: 'from vtkmodules import vtkFiltersCore'")
 from vtkmodules import vtkFiltersCore
+
+print("import: 'from vtkmodules import vtkFiltersGeneric'")
 from vtkmodules import vtkFiltersGeneric
+
+print("import: 'from vtkmodules import vtkGeovisCore'")
 from vtkmodules import vtkGeovisCore
+
+print("import: 'from vtkmodules import vtkFiltersHybrid'")
 from vtkmodules import vtkFiltersHybrid
+
+print("import: 'from vtkmodules import vtkIOCore'")
 from vtkmodules import vtkIOCore
+
+print("import: 'from vtkmodules import vtkImagingCore'")
 from vtkmodules import vtkImagingCore
+
+print("import: 'from vtkmodules import vtkInfovisCore'")
 from vtkmodules import vtkInfovisCore
+
+print("import: 'from vtkmodules import vtkRenderingCore'")
 from vtkmodules import vtkRenderingCore
+
+print("import: 'from vtkmodules import vtkViewsCore'")
 from vtkmodules import vtkViewsCore
-from vtkmodules import vtkRenderingQt
+
+try:
+    print("import: 'from vtkmodules import vtkRenderingQt'")
+    from vtkmodules import vtkRenderingQt
+except ImportError as e:
+    print(e)
+    exit(1)
+
+print("import: 'from vtkmodules import vtkRenderingVolume'")
 from vtkmodules import vtkRenderingVolume
+
+print("import: 'from vtkmodules import vtkInteractionWidgets'")
 from vtkmodules import vtkInteractionWidgets
+
+print("import: 'from vtkmodules import vtkWebCore'")
 from vtkmodules import vtkWebCore
+
+print("import: 'from vtkmodules import web'")
 from vtkmodules import web
+
+print("import: 'from vtkmodules.web import utils'")
 from vtkmodules.web import utils
+
+
 # If this fails it raises a DistributionNotFound exception
 pkg_resources.get_distribution('vtk')
 
@@ -62,8 +134,9 @@ except Exception as e:
     print("Testing core VTK functionality without rendering")
     # Basic non-rendering test
     source = vtk.vtkCubeSource()
-    print(f"VTK installed and basic functionality works")
+    print("VTK installed and basic functionality works")
     sys.exit(0)  # Exit with success if basic functionality works
+
 window.AddRenderer(renderer)
 window.SetSize(500, 500)
 window.Render()
