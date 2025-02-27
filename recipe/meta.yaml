@@ -22,7 +22,7 @@ source:
 build:
   number: {{ build }}
   string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
-  skip: True  # [s390x]
+  skip: True  # [s390x or py<313]
   ignore_run_exports_from:
     - ffmpeg  # [not win]
   run_exports:
@@ -71,7 +71,6 @@ requirements:
   host:
     - python
     # VTK Third Party dependencies
-    - libxcb 1.15                  # [linux]
     - zlib {{ zlib }}
     - freetype 2.12
     - fmt 9
