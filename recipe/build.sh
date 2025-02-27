@@ -22,11 +22,6 @@ fi
 
 VTK_ARGS=()
 
-
-VTK_ARGS+=(
-    "-DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN:BOOL=OFF"
-    "-DVTK_USE_TK:BOOL=ON"
-)
 if [[ "${target_platform}" == linux-* ]]; then
     # Make sure libEGL can be found during both build and runtime
     if [[ -d "${PREFIX}/lib" ]]; then
@@ -161,6 +156,9 @@ cmake .. -G "Ninja" ${CMAKE_ARGS} \
     -DPython3_FIND_STRATEGY=LOCATION \
     -DPython3_ROOT_DIR=${PREFIX} \
     -DPython3_EXECUTABLE=${PREFIX}/bin/python \
+    -DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN:BOOL=OFF \
+    -DVTK_USE_TK:BOOL=ON \
+    -DVTK_SMP_ENABLE_TBB:BOOL=ON \
     -DVTK_MODULE_ENABLE_VTK_PythonInterpreter:STRING=NO \
     -DVTK_MODULE_ENABLE_VTK_RenderingFreeType:STRING=YES \
     -DVTK_MODULE_ENABLE_VTK_RenderingMatplotlib:STRING=YES \
