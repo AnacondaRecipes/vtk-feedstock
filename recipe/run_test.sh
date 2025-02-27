@@ -9,7 +9,7 @@ echo "Testing ${PKG_NAME}-${PKG_VERSION} ..."
 if [[ "$(uname)" == "Linux" ]]; then
 	export QT_XCB_GL_INTEGRATION=none
 
-	for loc in $PREFIX/lib $PREFIX/x86_64-conda-linux-gnu/sysroot/usr/lib64; do
+	for loc in $PREFIX/lib $PREFIX/x86_64-conda-linux-gnu/sysroot/usr/lib64 $PREFIX/aarch64-conda-linux-gnu/sysroot/usr/lib64; do
 		if [ -d "$loc" ]; then
 		export LD_LIBRARY_PATH="$loc:$LD_LIBRARY_PATH"
 		fi
