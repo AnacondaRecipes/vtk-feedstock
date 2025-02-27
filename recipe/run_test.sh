@@ -14,11 +14,7 @@ if [[ "$(uname)" == "Linux" ]]; then
 		export LD_LIBRARY_PATH="$loc:$LD_LIBRARY_PATH"
 		fi
 	done
-	echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
-
-	echo "Looking for libEGL.so.1:"
-	find $PREFIX -name "libEGL.so*" || echo "No libEGL.so found in PREFIX"
-
+	echo "LD_LIBRARY_PATH: ""$LD_LIBRARY_PATH"
 fi
 
 ${PYTHON} -m pip check

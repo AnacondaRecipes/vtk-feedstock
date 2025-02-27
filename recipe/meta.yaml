@@ -88,12 +88,12 @@ requirements:
     # safe to use but generates *tons* of deprecation warnings that (may) hint
     # at subtle breaks.
     # v2022.0.0 breaks things.
-    - tbb
     - tbb-devel 2021.8.0
     - libnetcdf {{ libnetcdf }}
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
-    - tk {{ tk }}  # [not win]
+    # TODO: Remove tk
+    #- tk {{ tk }}  # [not win]
     - ffmpeg 6.1.1
     - utfcpp 3.2.1
     - eigen 3.4.0
@@ -125,6 +125,7 @@ requirements:
     # Extra dependencies for Web modules:
     # - aiohttp
     # - wslink
+    - matplotlib-base >=2.0.0
   run_constrained:
     # Paraview bundles its own VTK that has conflicting Python vtkmodules
     - paraview ==9999999999
@@ -178,6 +179,7 @@ about:
     - Copyright.txt
     - vendored-fast_float-license.txt  # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/fast_float/vtkfast_float/LICENSE-MIT
     - vendored-libharu-license.txt     # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/libharu/vtklibharu/LICENSE
+    - vendored-loguru-license.txt  # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/loguru/vtkloguru/LICENSE
     - vendored-pegtl-license.txt       # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/pegtl/vtkpegtl/LICENSE
     - vendored-exprtk-license.txt      # https://github.com/conda-forge/exprtk-feedstock/blob/main/license.txt
     - vendored-fmt-license.txt         # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/fmt/vtkfmt/LICENSE.rst

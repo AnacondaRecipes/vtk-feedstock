@@ -8,7 +8,7 @@ BUILD_CONFIG=Release
 # Use bash "Remove Largest Suffix Pattern" to get rid of all but major version number
 PYTHON_MAJOR_VERSION=${PY_VER%%.*}
 
-if [[ "${target_platform}" =~ osx-arm64 && "${target_platform}" != "${build_platform}" ]]; then
+if [[ "${target_platform}" == osx-arm64 && "${target_platform}" != "${build_platform}" ]]; then
     rm -f "${PREFIX}/lib/qt6/moc"
     ln -s "${BUILD_PREFIX}/lib/qt6/moc" "${PREFIX}/lib/qt6/moc"
 
@@ -33,11 +33,6 @@ if [[ "${target_platform}" == linux-* ]]; then
         export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH}"
     fi
 
-    # Try to locate libGL.so and libEGL.so
-    find $PREFIX -name "libGL.so*" || echo "libGL.so not found in PREFIX"
-    find $BUILD_PREFIX -name "libGL.so*" || echo "libGL.so not found in BUILD_PREFIX"
-    find $PREFIX -name "libEGL.so*" || echo "libEGL.so not found in PREFIX"
-    
     # For all Linux platforms
     VTK_ARGS+=(
         "-DVTK_USE_X:BOOL=ON"
@@ -189,6 +184,7 @@ cmake .. -G "Ninja" ${CMAKE_ARGS} \
     -DVTK_MODULE_USE_EXTERNAL_VTK_fast_float:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_ioss:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_libharu:BOOL=OFF \
+    -DVTK_MODULE_USE_EXTERNAL_VTK_loguru:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_pegtl:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_token:BOOL=OFF \
     -DVTK_MODULE_USE_EXTERNAL_VTK_verdict:BOOL=OFF \
