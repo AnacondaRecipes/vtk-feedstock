@@ -36,38 +36,44 @@ requirements:
     - patch     # [not win]
     - m2-patch  # [win]
     - pugixml
-    - {{ cdt('libice-devel') }}          # [linux]
-    - {{ cdt('libselinux') }}            # [linux]
-    - {{ cdt('libsm-devel') }}           # [linux]
-    - {{ cdt('libuuid') }}               # [linux]
-    - {{ cdt('libx11') }}                # [linux]
-    - {{ cdt('libx11-devel') }}          # [linux]
-    - {{ cdt('libxau') }}                # [linux]
-    - {{ cdt('libxau-devel') }}          # [linux]
-    - {{ cdt('libxcb') }}                # [linux]
-    - {{ cdt('libxdamage') }}            # [linux]
-    - {{ cdt('libxdamage-devel') }}      # [linux]
-    - {{ cdt('libxext') }}               # [linux]
-    - {{ cdt('libxfixes') }}             # [linux]
-    - {{ cdt('libxt-devel') }}           # [linux]
-    - {{ cdt('libxxf86vm') }}            # [linux]
-    - {{ cdt('mesa-dri-drivers') }}      # [linux]
-    - {{ cdt('mesa-libegl-devel') }}     # [linux]
-    - {{ cdt('mesa-libegl') }}           # [linux]
-    - {{ cdt('mesa-libgbm') }}           # [linux]
-    - {{ cdt('mesa-libgl') }}            # [linux]
-    - {{ cdt('mesa-libgl-devel') }}      # [linux]
-    - {{ cdt('libglvnd-glx') }}          # [linux and aarch64]
-    - {{ cdt('libglvnd') }}              # [linux and aarch64]
-    - {{ cdt('libglvnd-egl') }}          # [linux and aarch64]
-    - {{ cdt('libglvnd-opengl') }}       # [linux and aarch64]
-    - {{ cdt('libglvnd-devel') }}        # [linux and aarch64]
-    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    # strategy for these was to go through the build log and find stuff like
+    # OPENGL_GLES2_INCLUDE_DIR:PATH=OPENGL_GLES2_INCLUDE_DIR-NOTFOUND
+    # and add the library here so that as much stuff could be found as possible.
+    - {{ cdt('libglvnd-devel') }}             # [linux and aarch64]
+    - {{ cdt('libglvnd-egl') }}               # [linux and aarch64]
+    - {{ cdt('libglvnd-glx') }}               # [linux and aarch64]
+    - {{ cdt('libglvnd-opengl') }}            # [linux and aarch64]
+    - {{ cdt('libglvnd') }}                   # [linux and aarch64]
+    - {{ cdt('libice-devel') }}               # [linux]
+    - {{ cdt('libselinux') }}                 # [linux]
+    - {{ cdt('libsm-devel') }}                # [linux]
+    - {{ cdt('libuuid') }}                    # [linux]
+    - {{ cdt('libx11-devel') }}               # [linux]
+    - {{ cdt('libx11') }}                     # [linux]
+    - {{ cdt('libxau-devel') }}               # [linux]
+    - {{ cdt('libxau') }}                     # [linux]
+    - {{ cdt('libxcb') }}                     # [linux]
+    - {{ cdt('libxdamage-devel') }}           # [linux]
+    - {{ cdt('libxdamage') }}                 # [linux]
+    - {{ cdt('libxext') }}                    # [linux]
+    - {{ cdt('libxfixes') }}                  # [linux]
+    - {{ cdt('libxft') }}                     # [linux]
+    - {{ cdt('libxinerama') }}                # [linux]
+    - {{ cdt('libxkbfile') }}                 # [linux]
+    - {{ cdt('libxt-devel') }}                # [linux]
+    - {{ cdt('libxxf86vm') }}                 # [linux]
+    - {{ cdt('mesa-dri-drivers') }}           # [linux]
+    - {{ cdt('mesa-libegl-devel') }}          # [linux]
+    - {{ cdt('mesa-libegl') }}                # [linux]
+    - {{ cdt('mesa-libgbm') }}                # [linux]
+    - {{ cdt('mesa-libgl-devel') }}           # [linux]
+    - {{ cdt('mesa-libgl') }}                 # [linux]
     - {{ cdt('xcb-util-devel') }}             # [linux]
     - {{ cdt('xcb-util-image-devel') }}       # [linux]
     - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
     - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
     - {{ cdt('xcb-util-wm-devel') }}          # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
   host:
     - python
     # VTK Third Party dependencies
@@ -75,7 +81,9 @@ requirements:
     - freetype 2.12
     - fmt 9
     # for libEGL.so.1 on linux:
-    - freeglut 3.4.0  # [linux]
+    - freeglut 3.4.0                          # [linux]
+    - libglu 9.0.0                            # [linux]
+    - xorg-xproto 7.0.31                      # [linux]
     - hdf5 {{ hdf5 }}
     - libxml2 {{ libxml2 }}
     - libpng {{ libpng }}
@@ -92,8 +100,6 @@ requirements:
     - libnetcdf {{ libnetcdf }}
     - lz4-c 1.9.4
     - boost-cpp {{ boost_cpp }}
-    # TODO: Remove tk
-    #- tk {{ tk }}  # [not win]
     - ffmpeg 6.1.1
     - utfcpp 3.2.1
     - eigen 3.4.0
@@ -109,7 +115,7 @@ requirements:
     # Until this is solved:
     # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
     # we use the internal one in build-base.sh
-    - gl2ps  # [not osx]
+    - gl2ps      # [not osx]
     - qt-main =6
     - xz {{ xz }}
     - numpy 2.0  # [py<313]
@@ -137,38 +143,41 @@ test:
   requires:
     - pip
     - setuptools
-    - {{ cdt('libice-devel') }}          # [linux]
-    - {{ cdt('libselinux') }}            # [linux]
-    - {{ cdt('libsm-devel') }}           # [linux]
-    - {{ cdt('libuuid') }}               # [linux]
-    - {{ cdt('libx11') }}                # [linux]
-    - {{ cdt('libx11-devel') }}          # [linux]
-    - {{ cdt('libxau') }}                # [linux]
-    - {{ cdt('libxau-devel') }}          # [linux]
-    - {{ cdt('libxcb') }}                # [linux]
-    - {{ cdt('libxdamage') }}            # [linux]
-    - {{ cdt('libxdamage-devel') }}      # [linux]
-    - {{ cdt('libxext') }}               # [linux]
-    - {{ cdt('libxfixes') }}             # [linux]
-    - {{ cdt('libxt-devel') }}           # [linux]
-    - {{ cdt('libxxf86vm') }}            # [linux]
-    - {{ cdt('mesa-dri-drivers') }}      # [linux]
-    - {{ cdt('mesa-libegl-devel') }}     # [linux]
-    - {{ cdt('mesa-libegl') }}           # [linux]
-    - {{ cdt('mesa-libgbm') }}           # [linux]
-    - {{ cdt('mesa-libgl') }}            # [linux]
-    - {{ cdt('mesa-libgl-devel') }}      # [linux]
-    - {{ cdt('libglvnd-glx') }}          # [linux and aarch64]
-    - {{ cdt('libglvnd') }}              # [linux and aarch64]
-    - {{ cdt('libglvnd-egl') }}          # [linux and aarch64]
-    - {{ cdt('libglvnd-opengl') }}       # [linux and aarch64]
-    - {{ cdt('libglvnd-devel') }}        # [linux and aarch64]
-    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('libglvnd-devel') }}             # [linux and aarch64]
+    - {{ cdt('libglvnd-egl') }}               # [linux and aarch64]
+    - {{ cdt('libglvnd-glx') }}               # [linux and aarch64]
+    - {{ cdt('libglvnd-opengl') }}            # [linux and aarch64]
+    - {{ cdt('libglvnd') }}                   # [linux and aarch64]
+    - {{ cdt('libice-devel') }}               # [linux]
+    - {{ cdt('libselinux') }}                 # [linux]
+    - {{ cdt('libsm-devel') }}                # [linux]
+    - {{ cdt('libuuid') }}                    # [linux]
+    - {{ cdt('libx11-devel') }}               # [linux]
+    - {{ cdt('libx11') }}                     # [linux]
+    - {{ cdt('libxau-devel') }}               # [linux]
+    - {{ cdt('libxau') }}                     # [linux]
+    - {{ cdt('libxcb') }}                     # [linux]
+    - {{ cdt('libxdamage-devel') }}           # [linux]
+    - {{ cdt('libxdamage') }}                 # [linux]
+    - {{ cdt('libxext') }}                    # [linux]
+    - {{ cdt('libxfixes') }}                  # [linux]
+    - {{ cdt('libxft') }}                     # [linux]
+    - {{ cdt('libxinerama') }}                # [linux]
+    - {{ cdt('libxkbfile') }}                 # [linux]
+    - {{ cdt('libxt-devel') }}                # [linux]
+    - {{ cdt('libxxf86vm') }}                 # [linux]
+    - {{ cdt('mesa-dri-drivers') }}           # [linux]
+    - {{ cdt('mesa-libegl-devel') }}          # [linux]
+    - {{ cdt('mesa-libegl') }}                # [linux]
+    - {{ cdt('mesa-libgbm') }}                # [linux]
+    - {{ cdt('mesa-libgl-devel') }}           # [linux]
+    - {{ cdt('mesa-libgl') }}                 # [linux]
     - {{ cdt('xcb-util-devel') }}             # [linux]
     - {{ cdt('xcb-util-image-devel') }}       # [linux]
     - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
     - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
     - {{ cdt('xcb-util-wm-devel') }}          # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
 
 about:
   home: https://vtk.org/
@@ -187,17 +196,17 @@ about:
     - vendored-token-license.txt       # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/token/vtktoken/license.md
     - vendored-verdict-license.txt     # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/verdict/vtkverdict/LICENSE
   summary: >
-    VTK is an open-source software system designed for 3D computer graphics, image processing, 
-    and visualization. It provides libraries and tools for developing scientific and 
+    VTK is an open-source software system designed for 3D computer graphics, image processing,
+    and visualization. It provides libraries and tools for developing scientific and
     engineering applications that require 3D visualization.
   description: |
-    VTK, or Visualization Toolkit, is an open-source software system designed for 3D computer graphics, 
-    image processing, and visualization. It provides a wide range of libraries and tools that are useful 
-    for developing scientific and engineering applications that require 3D visualization, such as medical 
-    imaging, computational fluid dynamics, and data visualization. The package supports a wide range of 
-    visualization algorithms and techniques, including volume rendering, isosurface extraction, contouring, 
-    and glyphs. VTK is implemented in C++ with Python bindings, and includes pre-built classes and functions 
-    for manipulating and visualizing data. The package has been used in various applications, including 
+    VTK, or Visualization Toolkit, is an open-source software system designed for 3D computer graphics,
+    image processing, and visualization. It provides a wide range of libraries and tools that are useful
+    for developing scientific and engineering applications that require 3D visualization, such as medical
+    imaging, computational fluid dynamics, and data visualization. The package supports a wide range of
+    visualization algorithms and techniques, including volume rendering, isosurface extraction, contouring,
+    and glyphs. VTK is implemented in C++ with Python bindings, and includes pre-built classes and functions
+    for manipulating and visualizing data. The package has been used in various applications, including
     medical imaging, computational fluid dynamics, molecular modeling, and geospatial data visualization.
   dev_url: https://gitlab.kitware.com/vtk/vtk
   doc_url: https://vtk.org/documentation/

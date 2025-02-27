@@ -79,6 +79,9 @@ from vtkmodules import vtkInfovisCore
 print("import: 'from vtkmodules import vtkRenderingCore'")
 from vtkmodules import vtkRenderingCore
 
+print("import: 'from  vtkmodules import vtkRenderingMatplotlib'")
+from  vtkmodules import vtkRenderingMatplotlib
+
 print("import: 'from vtkmodules import vtkViewsCore'")
 from vtkmodules import vtkViewsCore
 
