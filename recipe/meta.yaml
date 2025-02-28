@@ -80,8 +80,6 @@ requirements:
     - zlib {{ zlib }}
     - freetype 2.12
     - fmt 9
-    # for libEGL.so.1 on linux:
-    - freeglut 3.4.0                          # [linux]
     - libglu 9.0.0                            # [linux]
     - xorg-xproto 7.0.31                      # [linux]
     - hdf5 {{ hdf5 }}
