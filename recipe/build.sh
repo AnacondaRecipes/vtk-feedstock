@@ -78,12 +78,6 @@ if [[ "${target_platform}" == linux-* ]]; then
     # Make sure all required Mesa libraries are in LD_LIBRARY_PATH
     echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 
-    # TODO: generation of vtkmodules/vtkCommonCore.pyi causes an error on linux-64 and linux-aarch64:
-    # FAILED: lib/python3.9/site-packages/vtkmodules/vtkCommonCore.pyi lib/python3.9/site-packages/vtkmodules/vtkWebCore.pyi
-    # ImportError: libEGL.so.1: cannot open shared object file: No such file or directory.
-    # 2025/2/25: The patch 'patches/11929_disable_class_overrides_pyi.patch' seems doesn't fix it for that pyi file.
-    CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
-
 elif [[ "${target_platform}" == osx-* ]]; then
     VTK_ARGS+=(
         "-DVTK_USE_COCOA:BOOL=ON"
@@ -93,8 +87,6 @@ elif [[ "${target_platform}" == osx-* ]]; then
     # incompatible function pointers become errors in clang >=16
     export CFLAGS="${CFLAGS} -Wno-incompatible-pointer-types"
     export CXXFLAGS="${CXXFLAGS} -Wno-incompatible-pointer-types"
-
-    CMAKE_ARGS="${CMAKE_ARGS} -DVTK_BUILD_PYI_FILES:BOOL=ON"
 fi
 
 if [[ "$target_platform" != "linux-ppc64le" ]]; then
@@ -156,6 +148,7 @@ cmake .. -G "Ninja" ${CMAKE_ARGS} \
     -DPython3_FIND_STRATEGY=LOCATION \
     -DPython3_ROOT_DIR=${PREFIX} \
     -DPython3_EXECUTABLE=${PREFIX}/bin/python \
+    -DVTK_BUILD_PYI_FILES:BOOL=ON \
     -DVTK_DEFAULT_RENDER_WINDOW_OFFSCREEN:BOOL=OFF \
     -DVTK_USE_TK:BOOL=ON \
     -DVTK_SMP_ENABLE_TBB:BOOL=ON \

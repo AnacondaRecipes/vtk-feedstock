@@ -113,7 +113,7 @@ requirements:
     # Until this is solved:
     # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
     # we use the internal one in build-base.sh
-    - gl2ps      # [not osx]
+    - gl2ps 1.4.2  # [not osx]
     - qt-main =6
     - xz {{ xz }}
     - numpy 2.0  # [py<313]
