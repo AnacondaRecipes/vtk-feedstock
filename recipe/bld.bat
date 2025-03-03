@@ -10,7 +10,7 @@ set "CXXFLAGS=-MD"
 
 set PYTHON_MAJOR_VERSION=%PY_VER:~0,1%
 
-cmake .. -G "Ninja" %CMAKE_ARGS% ^
+cmake .. -G "Ninja" ^
     -Wno-dev ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^
@@ -47,8 +47,7 @@ cmake .. -G "Ninja" %CMAKE_ARGS% ^
     -DVTK_MODULE_ENABLE_VTK_IOXdmf3:STRING=YES ^
     -DVTK_MODULE_ENABLE_VTK_GUISupportQt:STRING=YES ^
     -DVTK_MODULE_ENABLE_VTK_RenderingQt:STRING=YES ^
-    -DLZMA_LIBRARY="%LIBRARY_PREFIX%/lib/lzma.lib" ^
-    !VTK_ARGS!
+    -DLZMA_LIBRARY="%LIBRARY_PREFIX%/lib/lzma.lib"
 if errorlevel 1 exit 1
 
 ninja install -j %CPU_COUNT%
