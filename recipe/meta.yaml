@@ -114,15 +114,14 @@ requirements:
     # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
     # we use the internal one in build-base.sh
     - gl2ps 1.4.2  # [not osx]
-    - qt-main =6
+    - qtbase =6
     - xz {{ xz }}
-    - numpy 2.0  # [py<313]
-    - numpy 2.1  # [py>=313]
   run:
     - python
     - {{ pin_compatible('double-conversion') }}
     - nlohmann_json
     # v9.4.1 requires numpy >=1.9 https://gitlab.kitware.com/vtk/vtk/-/blob/v9.4.1/CMake/setup.py.in#L69
+    # It's only needed via the python component. It should just go in run, not host.
     - numpy
     - utfcpp
     # Extra dependencies for Web modules:
