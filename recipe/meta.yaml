@@ -31,9 +31,6 @@ requirements:
     - patch     # [not win]
     - m2-patch  # [win]
     - pugixml
-    # strategy for these was to go through the build log and find stuff like
-    # OPENGL_GLES2_INCLUDE_DIR:PATH=OPENGL_GLES2_INCLUDE_DIR-NOTFOUND
-    # and add the library here so that as much stuff could be found as possible.
     - {{ cdt('libglvnd-devel') }}             # [linux and aarch64]
     - {{ cdt('libglvnd-egl') }}               # [linux and aarch64]
     - {{ cdt('libglvnd-glx') }}               # [linux and aarch64]
