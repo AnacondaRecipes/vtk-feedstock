@@ -279,13 +279,21 @@ outputs:
       run_exports:
         - {{ pin_subpackage('vtk-io-ffmpeg', max_pin='x.x.x') }}
       missing_dso_whitelist:
-        - '*/libvtkIOMovie-*.dylib'
-        - '*/libvtkIOVideo-*.dylib'
-        - '*/libvtkCommonExecutionModel-*.dylib'
-        - '*/libvtkCommonSystem-*.dylib'
-        - '*/libvtkCommonCore-*.dylib'
-        - '*/libvtksys-*.dylib'
-        - '*/libvtkWrappingPythonCore*-*.dylib'
+        - '*/libvtkIOMovie-*.dylib'               # [osx]
+        - '*/libvtkIOVideo-*.dylib'               # [osx]
+        - '*/libvtkCommonExecutionModel-*.dylib'  # [osx]
+        - '*/libvtkCommonSystem-*.dylib'          # [osx]
+        - '*/libvtkCommonCore-*.dylib'            # [osx]
+        - '*/libvtksys-*.dylib'                   # [osx]
+        - '*/libvtkWrappingPythonCore*-*.dylib'   # [osx]
+        - '*/libvtkIOMovie-*.so*'                 # [linux]
+        - '*/libvtkIOVideo-*.so*'                 # [linux]
+        - '*/libvtkCommonExecutionModel-*.so*'    # [linux]
+        - '*/libvtkCommonSystem-*.so*'            # [linux]
+        - '*/libvtkCommonCore-*.so*'              # [linux]
+        - '*/libvtksys-*.so*'                     # [linux]
+        - '*/libvtkWrappingPythonCore*-*.so*'     # [linux]
+        - '/lib64/libc.so.6'                      # [linux]
     requirements:
       build: []
       host:
@@ -295,7 +303,7 @@ outputs:
       run:
         - {{ pin_subpackage("vtk-base", exact=True) }}
         - ffmpeg
-        - libcxx  # [osx]
+        - libcxx  # [unix]
     test:
       requires:
         - pip
