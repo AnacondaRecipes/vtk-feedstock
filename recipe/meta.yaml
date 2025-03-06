@@ -209,7 +209,7 @@ outputs:
         - xz {{ xz }}
       run:
         - python
-        - {{ pin_compatible('double-conversion') }}
+        - {{ pin_compatible('double-conversion') }}  # [not win]
         - nlohmann_json
         # v9.4.1 requires numpy >=1.9 https://gitlab.kitware.com/vtk/vtk/-/blob/v9.4.1/CMake/setup.py.in#L69
         # It's only needed via the python component. It should just go in run, not host.

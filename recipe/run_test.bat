@@ -1,5 +1,5 @@
 setlocal EnableDelayedExpansion
-echo on 
+echo on
 
 echo "Testing %PKG_NAME%-%PKG_VERSION% ..."
 
@@ -14,4 +14,4 @@ if not exist %PREFIX%\\Library\\bin\\vtkGUISupportQt-%PKG_VERSION_MINOR%.dll exi
 if not exist %PREFIX%\\Library\\lib\\vtkRenderingQt-%PKG_VERSION_MINOR%.lib exit 1
 if not exist %PREFIX%\\Library\\bin\\vtkRenderingQt-%PKG_VERSION_MINOR%.dll exit 1
 
-%PYTHON% %RECIPE_DIR%\\test_vtk.py
+%PYTHON% %RECIPE_DIR%\test_vtk.py
