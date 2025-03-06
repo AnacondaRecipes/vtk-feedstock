@@ -303,7 +303,8 @@ outputs:
       run:
         - {{ pin_subpackage("vtk-base", exact=True) }}
         - ffmpeg
-        - libcxx  # [unix]
+        - libcxx  # [osx]
+        - libstdcxx-ng  # [linux]
     test:
       requires:
         - pip

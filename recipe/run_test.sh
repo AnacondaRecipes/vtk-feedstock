@@ -28,7 +28,7 @@ test -f $PREFIX/lib/libvtkGUISupportQt-${PKG_VERSION_MINOR}${SHLIB_EXT}
 test -f $PREFIX/lib/libvtkRenderingQt-${PKG_VERSION_MINOR}${SHLIB_EXT}
 
 
-if [[ $(uname -m) == x86_64 ]]; then
+if [[ $(uname -m) == x86_64 ]] && [[ $(uname -m) != aarch64 ]]; then
 	DISPLAY=localhost:1.0 xvfb-run -a bash -c "${PYTHON} test_vtk.py" || {
 		echo "Test failed with exit code $?"
 		echo "This could be due to missing display or OpenGL capabilities in the CI environment"
