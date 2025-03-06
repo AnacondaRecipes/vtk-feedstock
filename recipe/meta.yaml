@@ -224,8 +224,6 @@ outputs:
         - paraview ==9999999999
 
     test:
-      files:
-        - test_vtk.py
       requires:
         - pip
         - setuptools
@@ -264,6 +262,8 @@ outputs:
         - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
         - {{ cdt('xcb-util-wm-devel') }}          # [linux]
         - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
+      files:
+        - test_vtk.py
       # imports are in test_vtk.py
       # commands are in run_test.{sh,bat}
       script: run_test.sh   # [not win]
