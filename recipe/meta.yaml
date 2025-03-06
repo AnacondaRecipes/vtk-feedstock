@@ -21,13 +21,7 @@ source:
 
 build:
   number: {{ build }}
-  string: "py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}"
   skip: True  # [s390x or py<313]
-  ignore_run_exports_from:
-    - ffmpeg  # [not win]
-  run_exports:
-    - {{ pin_subpackage('vtk', max_pin='x.x.x') }}
-
 
 outputs:
   - name: vtk-base
