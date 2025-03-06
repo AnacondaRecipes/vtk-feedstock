@@ -26,6 +26,7 @@ build:
 outputs:
   - name: vtk-base
     build:
+      skip: True  # [s390x or py<313]
       script:
         - ${RECIPE_DIR}/build-base.sh  # [not win]
         - "%RECIPE_DIR%\\bld-base.bat"  # [win]
@@ -183,6 +184,7 @@ outputs:
 
   - name: vtk-io-ffmpeg
     build:
+      skip: True  # [s390x or py<313]
       script:
         - ${RECIPE_DIR}/build-io-ffmpeg.sh  # [not win]
         - exit 1  # [win]
@@ -207,6 +209,7 @@ outputs:
 
   - name: vtk
     build:
+      skip: True  # [s390x or py<313]
       ignore_run_exports_from:
         - ffmpeg
       run_exports:
