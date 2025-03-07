@@ -336,6 +336,8 @@ outputs:
       imports:
         - vtk
         - vtk.vtkIOFFMPEG  # [not win]
+      commands:      # [not win]
+        - pip check  # [not win]
 
 about:
   home: https://vtk.org/
