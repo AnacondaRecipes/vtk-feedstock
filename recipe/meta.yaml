@@ -78,7 +78,7 @@ requirements:
     - libxml2 {{ libxml2 }}
     - libpng {{ libpng }}
     - jpeg {{ jpeg }}
-    - libtiff 4.7.0
+    - libtiff {{ libtiff }}
     - jsoncpp 1.9.4
     - expat {{ expat }}
     # Limit TBB version. The oneAPI (2021.*) release removed the `tbb_stddef.h`
@@ -178,7 +178,7 @@ outputs:
         - libxml2 {{ libxml2 }}
         - libpng {{ libpng }}
         - jpeg {{ jpeg }}
-        - libtiff 4.7.0
+        - libtiff {{ libtiff }}
         - jsoncpp 1.9.4
         - expat {{ expat }}
         # Limit TBB version. The oneAPI (2021.*) release removed the `tbb_stddef.h`
