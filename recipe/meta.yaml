@@ -38,7 +38,7 @@ requirements:
     - libglx                                       # [linux]
     - libopengl                                    # [linux]
     - libxcb                                       # [linux]
-    - mesa-dri-drivers                             # [linux]
+    - mesalib                                      # [linux]
     - xcb-util                                     # [linux]
     - xcb-util-image                               # [linux]
     - xcb-util-keysyms                             # [linux]
@@ -127,7 +127,7 @@ outputs:
         - libglx                                       # [linux]
         - libopengl                                    # [linux]
         - libxcb                                       # [linux]
-        - mesa-dri-drivers                             # [linux]
+        - mesalib                                      # [linux]
         - xcb-util                                     # [linux]
         - xcb-util-image                               # [linux]
         - xcb-util-keysyms                             # [linux]
@@ -208,6 +208,30 @@ outputs:
       requires:
         - pip
         - setuptools
+        # x11 dependencies
+        - libegl                                       # [linux]
+        - libgl-devel                                  # [linux]
+        - libglx                                       # [linux]
+        - libopengl                                    # [linux]
+        - libxcb                                       # [linux]
+        - mesalib                                      # [linux]
+        - xcb-util                                     # [linux]
+        - xcb-util-image                               # [linux]
+        - xcb-util-keysyms                             # [linux]
+        - xcb-util-renderutil                          # [linux]
+        - xcb-util-wm                                  # [linux]
+        - xorg-libice                                  # [linux]
+        - xorg-libsm                                   # [linux]
+        - xorg-libx11                                  # [linux]
+        - xorg-libxau                                  # [linux]
+        - xorg-libxdamage                              # [linux]
+        - xorg-libxext                                 # [linux]
+        - xorg-libxfixes                               # [linux]
+        - xorg-libxft                                  # [linux]
+        - xorg-libxinerama                             # [linux]
+        - xorg-libxt                                   # [linux]
+        - xorg-libxxf86vm                              # [linux]
+        - xorg-xorgproto                               # [linux]
       files:
         - test_vtk.py
       # imports are in test_vtk.py
