@@ -34,10 +34,33 @@ if [[ "${target_platform}" == linux-* ]]; then
         "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
     )
 
+    # Debug: List available OpenGL libraries
+    echo "Available OpenGL libraries in $PREFIX/lib:"
+    ls -la "$PREFIX/lib/" | grep -E "(libGL|libEGL|libGLX)" || echo "No OpenGL libraries found"
+    echo "Available OpenGL headers in $PREFIX/include:"
+    ls -la "$PREFIX/include/" | grep GL || echo "No GL directory found"
+
     # Set GL and EGL paths explicitly if found
     if [ -f "$PREFIX/lib/libGL.so.1" ]; then
+        echo "Found libGL.so.1 at $PREFIX/lib/libGL.so.1"
         VTK_ARGS+=("-DOPENGL_opengl_LIBRARY:FILEPATH=$PREFIX/lib/libGL.so.1")
     fi
+    
+    # Set GLX library path explicitly
+    if [ -f "$PREFIX/lib/libGLX.so.0" ]; then
+        echo "Found libGLX.so.0 at $PREFIX/lib/libGLX.so.0"
+        VTK_ARGS+=("-DOPENGL_glx_LIBRARY:FILEPATH=$PREFIX/lib/libGLX.so.0")
+    elif [ -f "$PREFIX/lib/libGLX.so" ]; then
+        echo "Found libGLX.so at $PREFIX/lib/libGLX.so"
+        VTK_ARGS+=("-DOPENGL_glx_LIBRARY:FILEPATH=$PREFIX/lib/libGLX.so")
+    fi
+    
+    # Set OpenGL include directory
+    if [ -d "$PREFIX/include/GL" ]; then
+        echo "Found OpenGL headers at $PREFIX/include/GL"
+        VTK_ARGS+=("-DOPENGL_INCLUDE_DIR:PATH=$PREFIX/include")
+    fi
+    
     # Make sure GL libraries are available
     if [ ! -f "$PREFIX/lib/libGL.so.1" ]; then
         SYSTEM_LIBGL=$(find /usr/lib* -name "libGL.so.1" | head -1)
@@ -63,7 +86,7 @@ if [[ "${target_platform}" == linux-* ]]; then
             VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$SYSTEM_LIBEGL")
             # Add the directory to LD_LIBRARY_PATH
             export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBEGL):$LD_LIBRARY_PATH"
-        elif [ -n "${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1" ]; then
+        elif [ -f "${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1" ]; then
             echo "Found libEGL.so.1 at ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1"
             VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1")
             # Hack to help the build tool find CDT pkgconfig and libraries during build. LD_LIBRARY_PATH is used rather than
