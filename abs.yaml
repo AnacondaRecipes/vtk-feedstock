@@ -5,3 +5,4 @@ build_parameters:
 
 channels:
   - https://staging.continuum.io/prefect/fs/mesalib-feedstock/pr1/19a927e
+  - https://staging.continuum.io/prefect/fs/qtbase-feedstock/pr7/fe77d94
