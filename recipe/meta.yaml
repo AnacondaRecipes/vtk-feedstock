@@ -1,5 +1,5 @@
 {% set version = "9.4.1" %}
-{% set build = 1 %}
+{% set build = 2 %}
 
 {% set minor_version = ".".join(version.split(".")[:2]) %}
 
@@ -31,61 +31,36 @@ requirements:
     - patch     # [not win]
     - m2-patch  # [win]
     - pugixml
-    # TODO: map CDT libglvnd to new X11 package
-    # - { cdt('libglvnd') }
-    # TODO: map CDT libselinux to new X11 package
-    # - { cdt('libselinux') }
-    # TODO: map CDT libuuid to new X11 package
-    # - { cdt('libuuid') }
-    # TODO: map CDT libx11 to new X11 package
-    # - { cdt('libx11') }
-    # TODO: map CDT libxau to new X11 package
-    # - { cdt('libxau') }
-    # TODO: map CDT libxft to new X11 package
-    # - { cdt('libxft') }
-    # TODO: map CDT libxinerama to new X11 package
-    # - { cdt('libxinerama') }
-    # TODO: map CDT libxkbfile to new X11 package
-    # - { cdt('libxkbfile') }
-    # TODO: map CDT mesa-libegl-devel to new X11 package
-    # - { cdt('mesa-libegl-devel') }
-    # TODO: map CDT mesa-libegl to new X11 package
-    # - { cdt('mesa-libegl') }
-    # TODO: map CDT mesa-libgbm to new X11 package
-    # - { cdt('mesa-libgbm') }
-    # TODO: map CDT mesa-libgl to new X11 package
-    # - { cdt('mesa-libgl') }
   host:
-    - libgl-devel
-    - libegl
-    - libglx
-    - libopengl
-    - xorg-libice
-    - xorg-libsm
-    - xorg-libx11
-    - xorg-libxau
-    - libxcb
-    - xorg-libxdamage
-    - xorg-libxdamage
-    - xorg-libxext
-    - xorg-libxfixes
-    - xorg-libxt
-    - xorg-libxxf86vm
-    - mesa-dri-drivers
-    - libgl-devel
-    - xcb-util
-    - xcb-util-image
-    - xcb-util-keysyms
-    - xcb-util-renderutil
-    - xcb-util-wm
-    - xorg-xproto
+    - libglu 9.0.3                                 # [linux]
+    - libegl                                       # [linux]
+    - libgl-devel                                  # [linux]
+    - libglx                                       # [linux]
+    - libopengl                                    # [linux]
+    - libxcb                                       # [linux]
+    - mesalib                                      # [linux]
+    - xcb-util                                     # [linux]
+    - xcb-util-image                               # [linux]
+    - xcb-util-keysyms                             # [linux]
+    - xcb-util-renderutil                          # [linux]
+    - xcb-util-wm                                  # [linux]
+    - xorg-libice                                  # [linux]
+    - xorg-libsm                                   # [linux]
+    - xorg-libx11                                  # [linux]
+    - xorg-libxau                                  # [linux]
+    - xorg-libxdamage                              # [linux]
+    - xorg-libxext                                 # [linux]
+    - xorg-libxfixes                               # [linux]
+    - xorg-libxft                                  # [linux]
+    - xorg-libxinerama                             # [linux]
+    - xorg-libxt                                   # [linux]
+    - xorg-libxxf86vm                              # [linux]
+    - xorg-xorgproto                               # [linux]
     - python
     # VTK Third Party dependencies
     - zlib {{ zlib }}
     - freetype 2.12
     - fmt 9
-    - libglu 9.0.0                            # [linux]
-    - xorg-xproto 7.0.31                      # [linux]
     - hdf5 {{ hdf5 }}
     - libxml2 {{ libxml2 }}
     - libpng {{ libpng }}
@@ -140,41 +115,36 @@ outputs:
         - patch     # [not win]
         - m2-patch  # [win]
         - pugixml
-        # strategy for these was to go through the build log and find stuff like
-        # OPENGL_GLES2_INCLUDE_DIR:PATH=OPENGL_GLES2_INCLUDE_DIR-NOTFOUND
-        # and add the library here so that as much stuff could be found as possible.
-        # TODO: map CDT libglvnd to new X11 package
-        # - { cdt('libglvnd') }
-        # TODO: map CDT libselinux to new X11 package
-        # - { cdt('libselinux') }
-        # TODO: map CDT libuuid to new X11 package
-        # - { cdt('libuuid') }
-        # TODO: map CDT libx11 to new X11 package
-        # - { cdt('libx11') }
-        # TODO: map CDT libxau to new X11 package
-        # - { cdt('libxau') }
-        # TODO: map CDT libxft to new X11 package
-        # - { cdt('libxft') }
-        # TODO: map CDT libxinerama to new X11 package
-        # - { cdt('libxinerama') }
-        # TODO: map CDT libxkbfile to new X11 package
-        # - { cdt('libxkbfile') }
-        # TODO: map CDT mesa-libegl-devel to new X11 package
-        # - { cdt('mesa-libegl-devel') }
-        # TODO: map CDT mesa-libegl to new X11 package
-        # - { cdt('mesa-libegl') }
-        # TODO: map CDT mesa-libgbm to new X11 package
-        # - { cdt('mesa-libgbm') }
-        # TODO: map CDT mesa-libgl to new X11 package
-        # - { cdt('mesa-libgl') }
       host:
+        - libglu 9.0.3                                 # [linux]
+        - libegl                                       # [linux]
+        - libgl-devel                                  # [linux]
+        - libglx                                       # [linux]
+        - libopengl                                    # [linux]
+        - libxcb                                       # [linux]
+        - mesalib                                      # [linux]
+        - xcb-util                                     # [linux]
+        - xcb-util-image                               # [linux]
+        - xcb-util-keysyms                             # [linux]
+        - xcb-util-renderutil                          # [linux]
+        - xcb-util-wm                                  # [linux]
+        - xorg-libice                                  # [linux]
+        - xorg-libsm                                   # [linux]
+        - xorg-libx11                                  # [linux]
+        - xorg-libxau                                  # [linux]
+        - xorg-libxdamage                              # [linux]
+        - xorg-libxext                                 # [linux]
+        - xorg-libxfixes                               # [linux]
+        - xorg-libxft                                  # [linux]
+        - xorg-libxinerama                             # [linux]
+        - xorg-libxt                                   # [linux]
+        - xorg-libxxf86vm                              # [linux]
+        - xorg-xorgproto                               # [linux]
         - python
         # VTK Third Party dependencies
         - zlib {{ zlib }}
         - freetype 2.12
         - fmt 9
-        - libglu 9.0.0                            # [linux]
-        - xorg-xproto 7.0.31                      # [linux]
         - hdf5 {{ hdf5 }}
         - libxml2 {{ libxml2 }}
         - libpng {{ libpng }}
@@ -228,30 +198,29 @@ outputs:
       requires:
         - pip
         - setuptools
-        # TODO: map CDT libglvnd to new X11 package
-        # - { cdt('libglvnd') }
-        # TODO: map CDT libselinux to new X11 package
-        # - { cdt('libselinux') }
-        # TODO: map CDT libuuid to new X11 package
-        # - { cdt('libuuid') }
-        # TODO: map CDT libx11 to new X11 package
-        # - { cdt('libx11') }
-        # TODO: map CDT libxau to new X11 package
-        # - { cdt('libxau') }
-        # TODO: map CDT libxft to new X11 package
-        # - { cdt('libxft') }
-        # TODO: map CDT libxinerama to new X11 package
-        # - { cdt('libxinerama') }
-        # TODO: map CDT libxkbfile to new X11 package
-        # - { cdt('libxkbfile') }
-        # TODO: map CDT mesa-libegl-devel to new X11 package
-        # - { cdt('mesa-libegl-devel') }
-        # TODO: map CDT mesa-libegl to new X11 package
-        # - { cdt('mesa-libegl') }
-        # TODO: map CDT mesa-libgbm to new X11 package
-        # - { cdt('mesa-libgbm') }
-        # TODO: map CDT mesa-libgl to new X11 package
-        # - { cdt('mesa-libgl') }
+        - libegl                                       # [linux]
+        - libgl-devel                                  # [linux]
+        - libglx                                       # [linux]
+        - libopengl                                    # [linux]
+        - libxcb                                       # [linux]
+        - mesalib                                      # [linux]
+        - xcb-util                                     # [linux]
+        - xcb-util-image                               # [linux]
+        - xcb-util-keysyms                             # [linux]
+        - xcb-util-renderutil                          # [linux]
+        - xcb-util-wm                                  # [linux]
+        - xorg-libice                                  # [linux]
+        - xorg-libsm                                   # [linux]
+        - xorg-libx11                                  # [linux]
+        - xorg-libxau                                  # [linux]
+        - xorg-libxdamage                              # [linux]
+        - xorg-libxext                                 # [linux]
+        - xorg-libxfixes                               # [linux]
+        - xorg-libxft                                  # [linux]
+        - xorg-libxinerama                             # [linux]
+        - xorg-libxt                                   # [linux]
+        - xorg-libxxf86vm                              # [linux]
+        - xorg-xorgproto                               # [linux]
       files:
         - test_vtk.py
       # imports are in test_vtk.py
