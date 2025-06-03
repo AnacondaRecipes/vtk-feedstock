@@ -33,10 +33,7 @@ requirements:
     - pugixml
   host:
     - libglu 9.0.3                                 # [linux]
-    - libegl {{ libegl }}                          # [linux]
-    - libgl-devel                                  # [linux]
-    - libglx {{ libglx }}                          # [linux]
-    - libopengl {{ libopengl }}                    # [linux]
+    - libopengl-devel {{ libopengl }}              # [linux]
     - python
     # VTK Third Party dependencies
     - zlib {{ zlib }}
@@ -54,26 +51,27 @@ requirements:
     # safe to use but generates *tons* of deprecation warnings that (may) hint
     # at subtle breaks.
     # v2022.0.0 breaks things.
-    - tbb-devel {{ tbb_devel }}
+    - tbb-devel 2021.8.0
     - libnetcdf {{ libnetcdf }}
     - lz4-c {{ lz4_c }}
     - boost-cpp {{ boost_cpp }}
     - ffmpeg {{ ffmpeg }}
-    - utfcpp {{ utfcpp }}
+    - utfcpp 3.2.1
     - eigen {{ eigen }}
-    - double-conversion {{ double_conversion }}
+    - double-conversion 2.0.8
     - glad2-cmake 2.0.8
+    # glad2 is a python package so no pinnings
     - glad2
     - libogg {{ libogg }}
     - libtheora {{ libtheora }}
-    - nlohmann_json {{ nlohmann_json }}
+    - nlohmann_json 3.11.2
     - proj {{ proj }}
     - sqlite {{ sqlite }}
     # Until this is solved:
     # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
     # we use the internal one in build-base.sh
     - gl2ps {{ gl2ps }}  # [not osx]
-    - qtbase-devel {{ qt }}
+    - qtbase-devel {{ qt_version }}
     - xz {{ xz }}
 
 outputs:
@@ -98,10 +96,7 @@ outputs:
         - pugixml
       host:
         - libglu 9.0.3                                 # [linux]
-        - libegl {{ libegl }}                          # [linux]
-        - libgl-devel                                  # [linux]
-        - libglx {{ libglx }}                          # [linux]
-        - libopengl {{ libopengl }}                    # [linux]
+        - libopengl-devel {{ libopengl }}              # [linux]
         - python
         # VTK Third Party dependencies
         - zlib {{ zlib }}
@@ -119,26 +114,27 @@ outputs:
         # safe to use but generates *tons* of deprecation warnings that (may) hint
         # at subtle breaks.
         # v2022.0.0 breaks things.
-        - tbb-devel {{ tbb_devel }}
+        - tbb-devel 2021.8.0
         - libnetcdf {{ libnetcdf }}
         - lz4-c {{ lz4_c }}
         - boost-cpp {{ boost_cpp }}
         - ffmpeg {{ ffmpeg }}
-        - utfcpp {{ utfcpp }}
+        - utfcpp 3.2.1
         - eigen {{ eigen }}
-        - double-conversion {{ double_conversion }}
+        - double-conversion 2.0.8
         - glad2-cmake 2.0.8
+        # glad2 is a python package so no pinnings
         - glad2
         - libogg {{ libogg }}
         - libtheora {{ libtheora }}
-        - nlohmann_json {{ nlohmann_json }}
+        - nlohmann_json 3.11.2
         - proj {{ proj }}
         - sqlite {{ sqlite }}
         # Until this is solved:
         # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
         # we use the internal one in build-base.sh
         - gl2ps {{ gl2ps }}  # [not osx]
-        - qtbase-devel {{ qt }}
+        - qtbase-devel {{ qt_version }}
         - xz {{ xz }}
       run:
         - python
