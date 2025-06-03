@@ -22,7 +22,6 @@ source:
 
 build:
   number: {{ build }}
-  skip: True  # [s390x or py<313]
 
 requirements:
   build:
@@ -59,7 +58,7 @@ requirements:
     - ffmpeg {{ ffmpeg }}
     - utfcpp 3.2.1
     - eigen {{ eigen }}
-    - double-conversion 2.0.8
+    - double-conversion 3.1.5
     - glad2-cmake 2.0.8
     # glad2 is a python package so no pinnings
     - glad2
@@ -122,7 +121,7 @@ outputs:
         - ffmpeg {{ ffmpeg }}
         - utfcpp 3.2.1
         - eigen {{ eigen }}
-        - double-conversion 2.0.8
+        - double-conversion 3.1.5
         - glad2-cmake 2.0.8
         # glad2 is a python package so no pinnings
         - glad2
