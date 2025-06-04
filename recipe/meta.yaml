@@ -83,7 +83,9 @@ outputs:
         - ${RECIPE_DIR}/build-base.sh  # [not win]
         - "%RECIPE_DIR%\\bld-base.bat"  # [win]
       ignore_run_exports:
-        - ffmpeg  # [not win]
+        - ffmpeg     # [not win]
+        - libglu     # [linux and aarch64]
+        - libopengl  # [linux and aarch64]
       run_exports:
         - {{ pin_subpackage('vtk-base', max_pin='x.x.x') }}
 
@@ -188,6 +190,7 @@ outputs:
         - '*/libvtksys-*.so*'                     # [linux]
         - '*/libvtkWrappingPythonCore*-*.so*'     # [linux]
         - '/lib64/libc.so.6'                      # [linux]
+        - '/lib64/ld-linux-aarch64.so.1'          # [linux and aarch64]
     requirements:
       build: []
       host:
