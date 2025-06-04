@@ -11,13 +11,6 @@ PYTHON_MAJOR_VERSION=${PY_VER%%.*}
 if [[ "${target_platform}" == osx-arm64 && "${target_platform}" != "${build_platform}" ]]; then
     rm -f "${PREFIX}/lib/qt6/moc"
     ln -s "${BUILD_PREFIX}/lib/qt6/moc" "${PREFIX}/lib/qt6/moc"
-
-    # Additional debugging information
-    echo "Adjusted Qt tools for osx-arm64 with build variant qt6"
-    echo "Removed: ${PREFIX}/lib/qt6/moc"
-    echo "Linked to: ${BUILD_PREFIX}/lib/qt6/moc"
-else
-    echo "Skipping Qt tools adjustment. Target platform: ${target_platform}"
 fi
 
 VTK_ARGS=()
@@ -34,12 +27,6 @@ if [[ "${target_platform}" == linux-* ]]; then
         "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
     )
 
-    # Debug: List available OpenGL libraries
-    echo "Available OpenGL libraries in $PREFIX/lib:"
-    ls -la "$PREFIX/lib/" | grep -E "(libGL|libEGL|libGLX)" || echo "No OpenGL libraries found"
-    echo "Available OpenGL headers in $PREFIX/include:"
-    ls -la "$PREFIX/include/" | grep GL || echo "No GL directory found"
-
     # Function to detect and set OpenGL library paths
     detect_opengl_lib() {
         local lib_name="$1"
@@ -48,7 +35,6 @@ if [[ "${target_platform}" == linux-* ]]; then
         
         for pattern in "${lib_patterns[@]:2}"; do
             if [ -f "$PREFIX/lib/$pattern" ]; then
-                echo "Found $lib_name at $PREFIX/lib/$pattern"
                 VTK_ARGS+=("-D$cmake_var:FILEPATH=$PREFIX/lib/$pattern")
                 return 0
             fi
@@ -58,7 +44,6 @@ if [[ "${target_platform}" == linux-* ]]; then
         for pattern in "${lib_patterns[@]:2}"; do
             local system_lib=$(find /usr/lib* -name "$pattern" 2>/dev/null | head -1)
             if [ -n "$system_lib" ]; then
-                echo "Found system $lib_name at $system_lib"
                 VTK_ARGS+=("-D$cmake_var:FILEPATH=$system_lib")
                 export LD_LIBRARY_PATH="$(dirname $system_lib):$LD_LIBRARY_PATH"
                 return 0
@@ -69,14 +54,12 @@ if [[ "${target_platform}" == linux-* ]]; then
         for pattern in "${lib_patterns[@]:2}"; do
             local cdt_lib="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/$pattern"
             if [ -f "$cdt_lib" ]; then
-                echo "Found CDT $lib_name at $cdt_lib"
                 VTK_ARGS+=("-D$cmake_var:FILEPATH=$cdt_lib")
                 export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
                 return 0
             fi
         done
         
-        echo "WARNING: Couldn't find $lib_name"
         return 1
     }
 
@@ -87,12 +70,8 @@ if [[ "${target_platform}" == linux-* ]]; then
 
     # Set OpenGL include directory
     if [ -d "$PREFIX/include/GL" ]; then
-        echo "Found OpenGL headers at $PREFIX/include/GL"
         VTK_ARGS+=("-DOPENGL_INCLUDE_DIR:PATH=$PREFIX/include")
     fi
-
-    # Make sure all required Mesa libraries are in LD_LIBRARY_PATH
-    echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 
 elif [[ "${target_platform}" == osx-* ]]; then
     VTK_ARGS+=(
