@@ -78,7 +78,7 @@ requirements:
 outputs:
   - name: vtk-base
     build:
-      skip: True  # [s390x or py<313]
+      skip: True  # [osx and x86_64]
       script:
         - ${RECIPE_DIR}/build-base.sh  # [not win]
         - "%RECIPE_DIR%\\bld-base.bat"  # [win]
@@ -167,11 +167,10 @@ outputs:
 
   - name: vtk-io-ffmpeg
     build:
-      skip: True  # [s390x or py<313]
       script:
         - ${RECIPE_DIR}/build-io-ffmpeg.sh  # [not win]
         - exit 1  # [win]
-      skip: true  # [win]
+      skip: true  # [win or (osx and x86_64)]
       run_exports:
         - {{ pin_subpackage('vtk-io-ffmpeg', max_pin='x.x.x') }}
       missing_dso_whitelist:
@@ -212,7 +211,7 @@ outputs:
 
   - name: vtk
     build:
-      skip: True  # [s390x or py<313]
+      skip: True  # [osx and x86_64]
       ignore_run_exports_from:
         - ffmpeg
       run_exports:
