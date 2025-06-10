@@ -193,9 +193,11 @@ outputs:
     requirements:
       build: []
       host:
-        # We use ffmpeg here in the host section so that conda build
-        # uses the global pinnings and ensures ffmpeg compatibility.
-        - ffmpeg
+        # We use python and ffmpeg here in the host section so that conda build
+        # uses the global pinnings and ensures compatibility, as both ffmpeg and python
+        # are dependency of the package
+        - python
+        - ffmpeg {{ ffmpeg }}
       run:
         - {{ pin_subpackage("vtk-base", exact=True) }}
         - ffmpeg
@@ -219,10 +221,11 @@ outputs:
     requirements:
       build: []
       host:
+        - python
         # We include ffmpeg in the host dependency so the PKG_HASH is different between
         # ffmpeg==6 and ffmpeg==7 builds, avoiding the issue described in
         # https://github.com/conda-forge/vtk-feedstock/issues/347
-        - ffmpeg
+        - ffmpeg {{ ffmpeg }}
       run:
         - {{ pin_subpackage("vtk-base", max_pin="x.x.x") }}
         - {{ pin_subpackage("vtk-io-ffmpeg", max_pin='x.x.x') }}  # [not win]
