@@ -197,7 +197,7 @@ outputs:
         # uses the global pinnings and ensures ffmpeg compatibility.
         - ffmpeg
       run:
-        - {{ pin_subpackage("vtk-base", exact=True) }}
+        - {{ pin_subpackage("vtk-base", max_pin="x.x.x") }}
         - ffmpeg
         - libcxx  # [osx]
         - libstdcxx-ng  # [linux]
