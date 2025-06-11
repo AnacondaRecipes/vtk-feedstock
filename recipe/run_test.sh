@@ -20,6 +20,18 @@ fi
 ${PYTHON} -m pip check
 test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1
 
+# Verify that pkg_resources can find VTK with the correct version (not "base")
+echo "Verifying VTK package metadata..."
+VTK_DETECTED_VERSION=$(${PYTHON} -c "import pkg_resources; print(pkg_resources.get_distribution('vtk').version)")
+echo "pkg_resources detected VTK version: $VTK_DETECTED_VERSION"
+if [[ "$VTK_DETECTED_VERSION" != "$PKG_VERSION" ]]; then
+    echo "ERROR: pkg_resources detected wrong VTK version!"
+    echo "Expected: $PKG_VERSION"
+    echo "Got: $VTK_DETECTED_VERSION"
+    exit 1
+fi
+echo "OK: pkg_resources correctly detects VTK version $VTK_DETECTED_VERSION"
+
 # e.g., PKG_VERSION_MINOR is 9.4
 PKG_VERSION_MINOR=${PKG_VERSION%??}
 echo "$PKG_VERSION_MINOR"

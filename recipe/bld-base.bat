@@ -58,9 +58,9 @@ REM like mayavi, have a __requires__ in their __init__.py,
 REM which means pkg_resources needs to be able to find vtk.
 REM See https://setuptools.readthedocs.io/en/latest/pkg_resources.html#workingset-objects
 
-set egg_info=%SP_DIR%\%PKG_NAME%-%PKG_VERSION%.egg-info
+set egg_info=%SP_DIR%\vtk-%PKG_VERSION%.egg-info
 echo>%egg_info% Metadata-Version: 2.1
-echo>>%egg_info% Name: %PKG_NAME%
+echo>>%egg_info% Name: vtk
 echo>>%egg_info% Version: %PKG_VERSION%
 echo>>%egg_info% Summary: VTK is an open-source toolkit for 3D computer graphics, image processing, and visualization
 echo>>%egg_info% Platform: UNKNOWN
@@ -72,15 +72,15 @@ REM The INSTALLER file is necessary to ensure that pip list shows that the packa
 REM See https://packaging.python.org/specifications/recording-installed-packages/
 REM and https://packaging.python.org/en/latest/specifications/core-metadata/#core-metadata
 
-mkdir "%SP_DIR%/%PKG_NAME%-%PKG_VERSION%.dist-info"
+mkdir "%SP_DIR%/vtk-%PKG_VERSION%.dist-info"
 
-set metadata_file=%SP_DIR%\%PKG_NAME%-%PKG_VERSION%.dist-info\METADATA
+set metadata_file=%SP_DIR%\vtk-%PKG_VERSION%.dist-info\METADATA
 echo>%metadata_file% Metadata-Version: 2.1
-echo>>%metadata_file% Name: %PKG_NAME%
+echo>>%metadata_file% Name: vtk
 echo>>%metadata_file% Version: %PKG_VERSION%
 echo>>%metadata_file% Summary: VTK is an open-source toolkit for 3D computer graphics, image processing, and visualization
 
-set installer_file=%SP_DIR%\%PKG_NAME%-%PKG_VERSION%.dist-info\INSTALLER
+set installer_file=%SP_DIR%\vtk-%PKG_VERSION%.dist-info\INSTALLER
 echo>%installer_file% conda
 
 if errorlevel 1 exit 1
