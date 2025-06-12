@@ -199,7 +199,8 @@ outputs:
         - python
         - ffmpeg {{ ffmpeg }}
       run:
-        - {{ pin_subpackage("vtk-base", max_pin="x.x.x") }}
+        - python
+        - {{ pin_subpackage("vtk-base", exact=True) }}
         - ffmpeg
         - libcxx  # [osx]
         - libstdcxx-ng  # [linux]
@@ -227,6 +228,7 @@ outputs:
         # https://github.com/conda-forge/vtk-feedstock/issues/347
         - ffmpeg {{ ffmpeg }}
       run:
+        - python
         - {{ pin_subpackage("vtk-base", max_pin="x.x.x") }}
         - {{ pin_subpackage("vtk-io-ffmpeg", max_pin='x.x.x') }}  # [not win]
     test:
