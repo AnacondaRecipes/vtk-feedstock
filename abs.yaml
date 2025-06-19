@@ -4,4 +4,4 @@ build_parameters:
   # - "--error-overlinking" turning off for sake of qt's dependencies
 
 channels:
-  - https://staging.continuum.io/prefect/fs/qtbase-feedstock/pr7/c308172
+  - https://staging.continuum.io/prefect/fs/qtbase-feedstock/pr7/01c13ff
