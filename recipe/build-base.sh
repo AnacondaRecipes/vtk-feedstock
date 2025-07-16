@@ -11,13 +11,6 @@ PYTHON_MAJOR_VERSION=${PY_VER%%.*}
 if [[ "${target_platform}" == osx-arm64 && "${target_platform}" != "${build_platform}" ]]; then
     rm -f "${PREFIX}/lib/qt6/moc"
     ln -s "${BUILD_PREFIX}/lib/qt6/moc" "${PREFIX}/lib/qt6/moc"
-
-    # Additional debugging information
-    echo "Adjusted Qt tools for osx-arm64 with build variant qt6"
-    echo "Removed: ${PREFIX}/lib/qt6/moc"
-    echo "Linked to: ${BUILD_PREFIX}/lib/qt6/moc"
-else
-    echo "Skipping Qt tools adjustment. Target platform: ${target_platform}"
 fi
 
 VTK_ARGS=()
@@ -34,49 +27,51 @@ if [[ "${target_platform}" == linux-* ]]; then
         "-DVTK_OPENGL_HAS_EGL:BOOL=ON"
     )
 
-    # Set GL and EGL paths explicitly if found
-    if [ -f "$PREFIX/lib/libGL.so.1" ]; then
-        VTK_ARGS+=("-DOPENGL_opengl_LIBRARY:FILEPATH=$PREFIX/lib/libGL.so.1")
-    fi
-    # Make sure GL libraries are available
-    if [ ! -f "$PREFIX/lib/libGL.so.1" ]; then
-        SYSTEM_LIBGL=$(find /usr/lib* -name "libGL.so.1" | head -1)
-        if [ -n "$SYSTEM_LIBGL" ]; then
-            echo "Found system libGL.so.1 at $SYSTEM_LIBGL"
-            VTK_ARGS+=("-DOPENGL_opengl_LIBRARY:FILEPATH=$SYSTEM_LIBGL")
-            # Add the directory to LD_LIBRARY_PATH
-            export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBGL):$LD_LIBRARY_PATH"
-        fi
-    fi
-    
+    # Function to detect and set OpenGL library paths
+    detect_opengl_lib() {
+        local lib_name="$1"
+        local cmake_var="$2"
+        local lib_patterns=("$@")  # All arguments after the first two
+        
+        for pattern in "${lib_patterns[@]:2}"; do
+            if [ -f "$PREFIX/lib/$pattern" ]; then
+                VTK_ARGS+=("-D$cmake_var:FILEPATH=$PREFIX/lib/$pattern")
+                return 0
+            fi
+        done
+        
+        # Try system locations if not found in PREFIX
+        for pattern in "${lib_patterns[@]:2}"; do
+            local system_lib=$(find /usr/lib* -name "$pattern" 2>/dev/null | head -1)
+            if [ -n "$system_lib" ]; then
+                VTK_ARGS+=("-D$cmake_var:FILEPATH=$system_lib")
+                export LD_LIBRARY_PATH="$(dirname $system_lib):$LD_LIBRARY_PATH"
+                return 0
+            fi
+        done
+        
+        # Try CDT sysroot locations
+        for pattern in "${lib_patterns[@]:2}"; do
+            local cdt_lib="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/$pattern"
+            if [ -f "$cdt_lib" ]; then
+                VTK_ARGS+=("-D$cmake_var:FILEPATH=$cdt_lib")
+                export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
+                return 0
+            fi
+        done
+        
+        return 1
+    }
 
-    if [ -f "$PREFIX/lib/libEGL.so.1" ]; then
-        VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$PREFIX/lib/libEGL.so.1")
-    fi
-    # Make sure EGL libraries are available
-    if [ ! -f "${PREFIX}/lib/libEGL.so.1" ]; then
-        # Try to find libEGL.so in system locations
-        SYSTEM_LIBEGL=$(find /usr/lib* -name "libEGL.so.1" | head -1)
+    # Detect OpenGL libraries
+    detect_opengl_lib "libGL" "OPENGL_opengl_LIBRARY" "libGL.so.1" "libGL.so"
+    detect_opengl_lib "libGLX" "OPENGL_glx_LIBRARY" "libGLX.so.0" "libGLX.so"
+    detect_opengl_lib "libEGL" "OPENGL_egl_LIBRARY" "libEGL.so.1" "libEGL.so"
 
-        if [ -n "$SYSTEM_LIBEGL" ]; then
-            echo "Found system libEGL.so.1 at $SYSTEM_LIBEGL"
-            VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=$SYSTEM_LIBEGL")
-            # Add the directory to LD_LIBRARY_PATH
-            export LD_LIBRARY_PATH="$(dirname $SYSTEM_LIBEGL):$LD_LIBRARY_PATH"
-        elif [ -n "${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1" ]; then
-            echo "Found libEGL.so.1 at ${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1"
-            VTK_ARGS+=("-DOPENGL_egl_LIBRARY:FILEPATH=${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64/libEGL.so.1")
-            # Hack to help the build tool find CDT pkgconfig and libraries during build. LD_LIBRARY_PATH is used rather than
-            # LIBRARY_PATH because we need to run during the build and require libs from
-            # our CDT packages.
-            export LD_LIBRARY_PATH="${BUILD_PREFIX}/${HOST}/sysroot/usr/lib64:${PREFIX}/lib:${LD_LIBRARY_PATH}"
-        else
-            echo "WARNING: Couldn't find libEGL.so.1"
-        fi
+    # Set OpenGL include directory
+    if [ -d "$PREFIX/include/GL" ]; then
+        VTK_ARGS+=("-DOPENGL_INCLUDE_DIR:PATH=$PREFIX/include")
     fi
-
-    # Make sure all required Mesa libraries are in LD_LIBRARY_PATH
-    echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 
 elif [[ "${target_platform}" == osx-* ]]; then
     VTK_ARGS+=(

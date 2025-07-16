@@ -1,5 +1,6 @@
 {% set version = "9.4.1" %}
-{% set build = 1 %}
+{% set build = 2 %}
+{% set qt_version = "6" %}
 
 {% set minor_version = ".".join(version.split(".")[:2]) %}
 
@@ -21,7 +22,8 @@ source:
 
 build:
   number: {{ build }}
-  skip: True  # [s390x or py<313]
+  # qtbase isn't available for osx-64
+  skip: True  # [osx and x86_64]
 
 requirements:
   build:
@@ -31,92 +33,59 @@ requirements:
     - patch     # [not win]
     - m2-patch  # [win]
     - pugixml
-    - {{ cdt('libglvnd-devel') }}             # [linux and aarch64]
-    - {{ cdt('libglvnd-egl') }}               # [linux and aarch64]
-    - {{ cdt('libglvnd-glx') }}               # [linux and aarch64]
-    - {{ cdt('libglvnd-opengl') }}            # [linux and aarch64]
-    - {{ cdt('libglvnd') }}                   # [linux and aarch64]
-    - {{ cdt('libice-devel') }}               # [linux]
-    - {{ cdt('libselinux') }}                 # [linux]
-    - {{ cdt('libsm-devel') }}                # [linux]
-    - {{ cdt('libuuid') }}                    # [linux]
-    - {{ cdt('libx11-devel') }}               # [linux]
-    - {{ cdt('libx11') }}                     # [linux]
-    - {{ cdt('libxau-devel') }}               # [linux]
-    - {{ cdt('libxau') }}                     # [linux]
-    - {{ cdt('libxcb') }}                     # [linux]
-    - {{ cdt('libxdamage-devel') }}           # [linux]
-    - {{ cdt('libxdamage') }}                 # [linux]
-    - {{ cdt('libxext') }}                    # [linux]
-    - {{ cdt('libxfixes') }}                  # [linux]
-    - {{ cdt('libxft') }}                     # [linux]
-    - {{ cdt('libxinerama') }}                # [linux]
-    - {{ cdt('libxkbfile') }}                 # [linux]
-    - {{ cdt('libxt-devel') }}                # [linux]
-    - {{ cdt('libxxf86vm') }}                 # [linux]
-    - {{ cdt('mesa-dri-drivers') }}           # [linux]
-    - {{ cdt('mesa-libegl-devel') }}          # [linux]
-    - {{ cdt('mesa-libegl') }}                # [linux]
-    - {{ cdt('mesa-libgbm') }}                # [linux]
-    - {{ cdt('mesa-libgl-devel') }}           # [linux]
-    - {{ cdt('mesa-libgl') }}                 # [linux]
-    - {{ cdt('xcb-util-devel') }}             # [linux]
-    - {{ cdt('xcb-util-image-devel') }}       # [linux]
-    - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
-    - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
-    - {{ cdt('xcb-util-wm-devel') }}          # [linux]
-    - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
   host:
     - python
+    - libglx-devel {{ libglx }}  # [linux]
     # VTK Third Party dependencies
-    - zlib {{ zlib }}
-    - freetype 2.12
-    - fmt 9
-    - libglu 9.0.0                            # [linux]
-    - xorg-xproto 7.0.31                      # [linux]
-    - hdf5 {{ hdf5 }}
-    - libxml2 {{ libxml2 }}
-    - libpng {{ libpng }}
-    - jpeg {{ jpeg }}
-    - libtiff {{ libtiff }}
-    - jsoncpp 1.9.4
+    - boost-cpp {{ boost_cpp }}
+    - double-conversion 3.1.5
+    - eigen {{ eigen }}
     - expat {{ expat }}
+    - ffmpeg {{ ffmpeg }}
+    - fmt {{ fmt }}
+    - freetype {{ freetype }}
+    # glad2 is a python package so no pinnings
+    - glad2
+    - glad2-cmake 2.0.8
+    # Until this is solved:
+    # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
+    # we use the internal one in build-base.sh
+    - gl2ps {{ gl2ps }}  # [not osx]
+    - hdf5 {{ hdf5 }}
+    - jpeg {{ jpeg }}
+    - jsoncpp {{ jsoncpp }}
+    - libnetcdf {{ libnetcdf }}
+    - libogg {{ libogg }}
+    - libpng {{ libpng }}
+    - libtheora {{ libtheora }}
+    - libtiff {{ libtiff }}
+    - libxml2 {{ libxml2 }}
+    - lz4-c {{ lz4_c }}
+    - nlohmann_json 3.11.2
+    - proj {{ proj }}
+    - qtbase-devel {{ qt_version }}
+    - sqlite {{ sqlite }}
     # Limit TBB version. The oneAPI (2021.*) release removed the `tbb_stddef.h`
     # header, which causes configure-time errors. The 2020 release is probably
     # safe to use but generates *tons* of deprecation warnings that (may) hint
     # at subtle breaks.
     # v2022.0.0 breaks things.
     - tbb-devel 2021.8.0
-    - libnetcdf {{ libnetcdf }}
-    - lz4-c 1.9.4
-    - boost-cpp {{ boost_cpp }}
-    - ffmpeg 6.1.1
     - utfcpp 3.2.1
-    - eigen 3.4.0
-    - double-conversion 3.1.5
-    - glad2-cmake 2.0.8
-    - glad2
-    - libogg 1.3.5
-    - libtheora 1
-    - nlohmann_json 3.11.2
-    - proj {{ proj }}
-    - sqlite {{ sqlite }}
-    # Until this is solved:
-    # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
-    # we use the internal one in build-base.sh
-    - gl2ps 1.4.2  # [not osx]
-    - qtbase =6
     - xz {{ xz }}
+    - zlib {{ zlib }}
 
 outputs:
   - name: vtk-base
     build:
-      skip: True  # [s390x or py<313]
+      skip: True  # [osx and x86_64]
       script:
         - ${RECIPE_DIR}/build-base.sh  # [not win]
         - "%RECIPE_DIR%\\bld-base.bat"  # [win]
       ignore_run_exports:
-        - ffmpeg  # [not win]
+        - ffmpeg     # [not win]
+        - libglu     # [linux and aarch64]
+        - libopengl  # [linux and aarch64]
       run_exports:
         - {{ pin_subpackage('vtk-base', max_pin='x.x.x') }}
 
@@ -128,85 +97,47 @@ outputs:
         - patch     # [not win]
         - m2-patch  # [win]
         - pugixml
-        # strategy for these was to go through the build log and find stuff like
-        # OPENGL_GLES2_INCLUDE_DIR:PATH=OPENGL_GLES2_INCLUDE_DIR-NOTFOUND
-        # and add the library here so that as much stuff could be found as possible.
-        - {{ cdt('libglvnd-devel') }}             # [linux and aarch64]
-        - {{ cdt('libglvnd-egl') }}               # [linux and aarch64]
-        - {{ cdt('libglvnd-glx') }}               # [linux and aarch64]
-        - {{ cdt('libglvnd-opengl') }}            # [linux and aarch64]
-        - {{ cdt('libglvnd') }}                   # [linux and aarch64]
-        - {{ cdt('libice-devel') }}               # [linux]
-        - {{ cdt('libselinux') }}                 # [linux]
-        - {{ cdt('libsm-devel') }}                # [linux]
-        - {{ cdt('libuuid') }}                    # [linux]
-        - {{ cdt('libx11-devel') }}               # [linux]
-        - {{ cdt('libx11') }}                     # [linux]
-        - {{ cdt('libxau-devel') }}               # [linux]
-        - {{ cdt('libxau') }}                     # [linux]
-        - {{ cdt('libxcb') }}                     # [linux]
-        - {{ cdt('libxdamage-devel') }}           # [linux]
-        - {{ cdt('libxdamage') }}                 # [linux]
-        - {{ cdt('libxext') }}                    # [linux]
-        - {{ cdt('libxfixes') }}                  # [linux]
-        - {{ cdt('libxft') }}                     # [linux]
-        - {{ cdt('libxinerama') }}                # [linux]
-        - {{ cdt('libxkbfile') }}                 # [linux]
-        - {{ cdt('libxt-devel') }}                # [linux]
-        - {{ cdt('libxxf86vm') }}                 # [linux]
-        - {{ cdt('mesa-dri-drivers') }}           # [linux]
-        - {{ cdt('mesa-libegl-devel') }}          # [linux]
-        - {{ cdt('mesa-libegl') }}                # [linux]
-        - {{ cdt('mesa-libgbm') }}                # [linux]
-        - {{ cdt('mesa-libgl-devel') }}           # [linux]
-        - {{ cdt('mesa-libgl') }}                 # [linux]
-        - {{ cdt('xcb-util-devel') }}             # [linux]
-        - {{ cdt('xcb-util-image-devel') }}       # [linux]
-        - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
-        - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
-        - {{ cdt('xcb-util-wm-devel') }}          # [linux]
-        - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
       host:
         - python
+        - libglx-devel {{ libglx }}  # [linux]
         # VTK Third Party dependencies
-        - zlib {{ zlib }}
-        - freetype 2.12
-        - fmt 9
-        - libglu 9.0.0                            # [linux]
-        - xorg-xproto 7.0.31                      # [linux]
-        - hdf5 {{ hdf5 }}
-        - libxml2 {{ libxml2 }}
-        - libpng {{ libpng }}
-        - jpeg {{ jpeg }}
-        - libtiff {{ libtiff }}
-        - jsoncpp 1.9.4
+        - boost-cpp {{ boost_cpp }}
+        - double-conversion 3.1.5
+        - eigen {{ eigen }}
         - expat {{ expat }}
+        - ffmpeg {{ ffmpeg }}
+        - fmt {{ fmt }}
+        - freetype {{ freetype }}
+        # glad2 is a python package so no pinnings
+        - glad2
+        - glad2-cmake 2.0.8
+        # Until this is solved:
+        # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
+        # we use the internal one in build-base.sh
+        - gl2ps {{ gl2ps }}  # [not osx]
+        - hdf5 {{ hdf5 }}
+        - jpeg {{ jpeg }}
+        - jsoncpp {{ jsoncpp }}
+        - libnetcdf {{ libnetcdf }}
+        - libogg {{ libogg }}
+        - libpng {{ libpng }}
+        - libtheora {{ libtheora }}
+        - libtiff {{ libtiff }}
+        - libxml2 {{ libxml2 }}
+        - lz4-c {{ lz4_c }}
+        - nlohmann_json 3.11.2
+        - proj {{ proj }}
+        - qtbase-devel {{ qt_version }}
+        - sqlite {{ sqlite }}
         # Limit TBB version. The oneAPI (2021.*) release removed the `tbb_stddef.h`
         # header, which causes configure-time errors. The 2020 release is probably
         # safe to use but generates *tons* of deprecation warnings that (may) hint
         # at subtle breaks.
         # v2022.0.0 breaks things.
         - tbb-devel 2021.8.0
-        - libnetcdf {{ libnetcdf }}
-        - lz4-c 1.9.4
-        - boost-cpp {{ boost_cpp }}
-        - ffmpeg 6.1.1
         - utfcpp 3.2.1
-        - eigen 3.4.0
-        - double-conversion 3.1.5
-        - glad2-cmake 2.0.8
-        - glad2
-        - libogg 1.3.5
-        - libtheora 1
-        - nlohmann_json 3.11.2
-        - proj {{ proj }}
-        - sqlite {{ sqlite }}
-        # Until this is solved:
-        # https://gitlab.kitware.com/vtk/vtk/-/issues/19561
-        # we use the internal one in build-base.sh
-        - gl2ps 1.4.2  # [not osx]
-        - qtbase =6
         - xz {{ xz }}
+        - zlib {{ zlib }}
       run:
         - python
         - {{ pin_compatible('double-conversion') }}  # [not win]
@@ -227,41 +158,6 @@ outputs:
       requires:
         - pip
         - setuptools
-        - {{ cdt('libglvnd-devel') }}             # [linux and aarch64]
-        - {{ cdt('libglvnd-egl') }}               # [linux and aarch64]
-        - {{ cdt('libglvnd-glx') }}               # [linux and aarch64]
-        - {{ cdt('libglvnd-opengl') }}            # [linux and aarch64]
-        - {{ cdt('libglvnd') }}                   # [linux and aarch64]
-        - {{ cdt('libice-devel') }}               # [linux]
-        - {{ cdt('libselinux') }}                 # [linux]
-        - {{ cdt('libsm-devel') }}                # [linux]
-        - {{ cdt('libuuid') }}                    # [linux]
-        - {{ cdt('libx11-devel') }}               # [linux]
-        - {{ cdt('libx11') }}                     # [linux]
-        - {{ cdt('libxau-devel') }}               # [linux]
-        - {{ cdt('libxau') }}                     # [linux]
-        - {{ cdt('libxcb') }}                     # [linux]
-        - {{ cdt('libxdamage-devel') }}           # [linux]
-        - {{ cdt('libxdamage') }}                 # [linux]
-        - {{ cdt('libxext') }}                    # [linux]
-        - {{ cdt('libxfixes') }}                  # [linux]
-        - {{ cdt('libxft') }}                     # [linux]
-        - {{ cdt('libxinerama') }}                # [linux]
-        - {{ cdt('libxkbfile') }}                 # [linux]
-        - {{ cdt('libxt-devel') }}                # [linux]
-        - {{ cdt('libxxf86vm') }}                 # [linux]
-        - {{ cdt('mesa-dri-drivers') }}           # [linux]
-        - {{ cdt('mesa-libegl-devel') }}          # [linux]
-        - {{ cdt('mesa-libegl') }}                # [linux]
-        - {{ cdt('mesa-libgbm') }}                # [linux]
-        - {{ cdt('mesa-libgl-devel') }}           # [linux]
-        - {{ cdt('mesa-libgl') }}                 # [linux]
-        - {{ cdt('xcb-util-devel') }}             # [linux]
-        - {{ cdt('xcb-util-image-devel') }}       # [linux]
-        - {{ cdt('xcb-util-keysyms-devel') }}     # [linux]
-        - {{ cdt('xcb-util-renderutil-devel') }}  # [linux]
-        - {{ cdt('xcb-util-wm-devel') }}          # [linux]
-        - {{ cdt('xorg-x11-proto-devel') }}       # [linux]
       files:
         - test_vtk.py
       # imports are in test_vtk.py
@@ -271,11 +167,10 @@ outputs:
 
   - name: vtk-io-ffmpeg
     build:
-      skip: True  # [s390x or py<313]
       script:
         - ${RECIPE_DIR}/build-io-ffmpeg.sh  # [not win]
         - exit 1  # [win]
-      skip: true  # [win]
+      skip: true  # [win or (osx and x86_64)]
       run_exports:
         - {{ pin_subpackage('vtk-io-ffmpeg', max_pin='x.x.x') }}
       missing_dso_whitelist:
@@ -294,17 +189,22 @@ outputs:
         - '*/libvtksys-*.so*'                     # [linux]
         - '*/libvtkWrappingPythonCore*-*.so*'     # [linux]
         - '/lib64/libc.so.6'                      # [linux]
+        - '/lib64/ld-linux-aarch64.so.1'          # [linux and aarch64]
     requirements:
       build: []
       host:
-        # We use ffmpeg here in the host section so that conda build
-        # uses the global pinnings and ensures ffmpeg compatibility.
-        - ffmpeg
+        # We use python and ffmpeg here in the host section so that conda build
+        # uses the global pinnings and ensures compatibility, as both ffmpeg and python
+        # are dependency of the package
+        - python
+        - ffmpeg {{ ffmpeg }}
       run:
+        - python
         - {{ pin_subpackage("vtk-base", exact=True) }}
         - ffmpeg
         - libcxx  # [osx]
         - libstdcxx-ng  # [linux]
+        - libgcc-ng  # [linux]
     test:
       requires:
         - pip
@@ -314,7 +214,7 @@ outputs:
 
   - name: vtk
     build:
-      skip: True  # [s390x or py<313]
+      skip: True  # [osx and x86_64]
       ignore_run_exports_from:
         - ffmpeg
       run_exports:
@@ -322,13 +222,15 @@ outputs:
     requirements:
       build: []
       host:
+        - python
         # We include ffmpeg in the host dependency so the PKG_HASH is different between
         # ffmpeg==6 and ffmpeg==7 builds, avoiding the issue described in
         # https://github.com/conda-forge/vtk-feedstock/issues/347
-        - ffmpeg
+        - ffmpeg {{ ffmpeg }}
       run:
-        - {{ pin_subpackage("vtk-base", exact=True) }}
-        - {{ pin_subpackage("vtk-io-ffmpeg", exact=True) }}  # [not win]
+        - python
+        - {{ pin_subpackage("vtk-base", max_pin="x.x.x") }}
+        - {{ pin_subpackage("vtk-io-ffmpeg", max_pin='x.x.x') }}  # [not win]
     test:
       requires:
         - pip
