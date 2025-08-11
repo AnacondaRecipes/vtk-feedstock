@@ -1,5 +1,5 @@
 {% set version = "9.4.1" %}
-{% set build = 3 %}
+{% set build = 4 %}
 {% set qt_version = "6" %}
 
 {% set minor_version = ".".join(version.split(".")[:2]) %}
@@ -27,11 +27,10 @@ build:
 
 requirements:
   build:
+    - {{ stdlib("c") }}
     - {{ compiler("cxx") }}
     - cmake
     - ninja
-    - patch     # [not win]
-    - m2-patch  # [win]
     - pugixml
   host:
     - python
@@ -91,12 +90,12 @@ outputs:
 
     requirements:
       build:
+        - {{ stdlib("c") }}
         - {{ compiler("cxx") }}
         - cmake
         - ninja
-        - patch     # [not win]
-        - m2-patch  # [win]
         - pugixml
+        - msys2-patch  #[win]
       host:
         - python
         - libglx-devel {{ libglx }}  # [linux]
@@ -285,3 +284,5 @@ extra:
     - dfroger
     - tadeu
     - marcelotrevisani
+  skip-lints:
+    - wrong_output_script_key
