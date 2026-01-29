@@ -18,11 +18,12 @@ source:
     - patches/9987_try_except_python_import.patch  # [not win]
 
 build:
-  number: 1
+  number: 2
 
 requirements:
   build:
-    - {{ stdlib("c") }}
+    # Messes up the PBP graph gen.
+    # - {{ stdlib("c") }}
     - {{ compiler("cxx") }}
     - cmake
     - ninja-base
@@ -84,7 +85,8 @@ outputs:
 
     requirements:
       build:
-        - {{ stdlib("c") }}
+        # Messes up the PBP graph gen.
+        # - {{ stdlib("c") }}
         - {{ compiler("cxx") }}
         - cmake
         - ninja-base
@@ -229,7 +231,7 @@ outputs:
       imports:
         - vtk
         - vtk.vtkIOFFMPEG  # [not win]
-      commands:      # [not win]
+      commands:
         - pip check  # [not win]
 
 about:
