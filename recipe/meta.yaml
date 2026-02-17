@@ -18,7 +18,7 @@ source:
     - patches/9987_try_except_python_import.patch  # [not win]
 
 build:
-  number: 2
+  number: 3
 
 requirements:
   build:
@@ -31,6 +31,7 @@ requirements:
   host:
     - python
     - libglx-devel {{ libglx }}  # [linux]
+    - xorg-libxcursor 1.2.3  # [linux]
     # VTK Third Party dependencies
     - libboost-devel {{ libboost_devel }}
     - double-conversion 3.1.5

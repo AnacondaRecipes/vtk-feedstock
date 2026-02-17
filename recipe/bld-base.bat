@@ -19,6 +19,7 @@ cmake .. -G "Ninja" ^
     -DCMAKE_INSTALL_INCLUDEDIR="Library/include" ^
     -DCMAKE_INSTALL_DATAROOTDIR="Library/share" ^
     -DCMAKE_INSTALL_PREFIX="%PREFIX%" ^
+    -DHDF5_IS_PARALLEL=OFF ^
     -DVTK_PYTHON_SITE_PACKAGES_SUFFIX="Lib/site-packages" ^
     -DBUILD_TESTING:BOOL=OFF ^
     -DBUILD_SHARED_LIBS:BOOL=ON ^
