@@ -22,7 +22,7 @@ test $(pip list | grep vtk | tr -s " " | grep $PKG_VERSION | wc -l) -eq 1
 
 # Verify that pkg_resources can find VTK with the correct version (not "base")
 echo "Verifying VTK package metadata..."
-VTK_DETECTED_VERSION=$(python -c "import pkg_resources; print(pkg_resources.get_distribution('vtk').version)")
+VTK_DETECTED_VERSION=$(python -c "import importlib.metadata as m; print(m.version('vtk'))")
 echo "pkg_resources detected VTK version: $VTK_DETECTED_VERSION"
 if [[ "$VTK_DETECTED_VERSION" != "$PKG_VERSION" ]]; then
     echo "ERROR: pkg_resources detected wrong VTK version!"
