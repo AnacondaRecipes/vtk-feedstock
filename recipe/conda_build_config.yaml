@@ -1,10 +1,17 @@
-MACOSX_SDK_VERSION:        # [osx]
-  - '12.3'                 # [osx]
-c_compiler:                # [win]
-  - clang                  # [win]
-cxx_compiler:              # [win]
-  - clang                  # [win]
-c_compiler_version:        # [win]
-  - 17.0.6                 # [win]
-cxx_compiler_version:      # [win]
-  - 17.0.6                 # [win]
+c_compiler:    # [win]
+- vs2022       # [win]
+cxx_compiler:  # [win]
+- vs2022       # [win]
+
+# # compile issues with old version of fmt vendored in a vendored library .. :(
+# c_compiler_version:    # [osx]
+# - '18'                 # [osx]
+# cxx_compiler_version:  # [osx]
+# - '18'                 # [osx]
+
+libxml2:
+  - 2.14.4
+jpeg:
+  - 9f
+jsoncpp:
+  - 1.9.6
