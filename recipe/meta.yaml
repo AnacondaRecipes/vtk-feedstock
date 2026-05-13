@@ -1,4 +1,4 @@
-{% set version = "9.5.2" %}
+{% set version = "9.6.1" %}
 {% set qt_version = "6" %}
 
 {% set minor_version = ".".join(version.split(".")[:2]) %}
@@ -9,17 +9,17 @@ package:
 
 source:
   url: https://www.vtk.org/files/release/{{ minor_version }}/VTK-{{ version }}.tar.gz
-  sha256: cee64b98d270ff7302daf1ef13458dff5d5ac1ecb45d47723835f7f7d562c989
+  sha256: 47ca9af899165a33b935533046acce7c0aa3c007f0b57880665bb89d9986543f
   patches:
     - patches/fix-threads-windows.patch  # [win]
+    - patches/expat_implib.patch         # [win]
     # https://github.com/conda-forge/vtk-feedstock/pull/282
     # https://gitlab.kitware.com/vtk/vtk/-/issues/18365#note_1079278
     # https://gitlab.kitware.com/vtk/vtk/-/merge_requests/9987
     - patches/9987_try_except_python_import.patch  # [not win]
-    - patches/ioss-fix-fmt12.patch
 
 build:
-  number: 4
+  number: 0
 
 requirements:
   build:
