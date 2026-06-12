@@ -1,4 +1,4 @@
-{% set version = "9.6.1" %}
+{% set version = "9.6.2" %}
 {% set qt_version = "6" %}
 
 {% set minor_version = ".".join(version.split(".")[:2]) %}
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://www.vtk.org/files/release/{{ minor_version }}/VTK-{{ version }}.tar.gz
-  sha256: 47ca9af899165a33b935533046acce7c0aa3c007f0b57880665bb89d9986543f
+  sha256: aed12cec12a9609179bf66329070266627ca64244a10856a452b2a17ffb04a1d
   patches:
     - patches/fix-threads-windows.patch  # [win]
     - patches/expat_implib.patch         # [win]
@@ -49,7 +49,7 @@ requirements:
     # we use the internal one in build-base.sh
     - gl2ps {{ gl2ps }}  # [not osx]
     - hdf5 {{ hdf5 }}
-    - jpeg {{ jpeg }}
+    - libjpeg-turbo {{ libjpeg_turbo }}
     - jsoncpp {{ jsoncpp }}
     - libnetcdf {{ libnetcdf }}
     - libogg {{ libogg }}
@@ -112,7 +112,7 @@ outputs:
         # we use the internal one in build-base.sh
         - gl2ps {{ gl2ps }}  # [not osx]
         - hdf5 {{ hdf5 }}
-        - jpeg {{ jpeg }}
+        - libjpeg-turbo {{ libjpeg_turbo }}
         - jsoncpp {{ jsoncpp }}
         - libnetcdf {{ libnetcdf }}
         - libogg {{ libogg }}
