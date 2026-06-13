@@ -3,8 +3,6 @@ c_compiler:    # [win]
 cxx_compiler:  # [win]
 - vs2022       # [win]
 
-jpeg:
-  - 9f
 # 1.9.7 version is incompatible so we stay on 1.9.6 for now
 jsoncpp:
   - 1.9.6
