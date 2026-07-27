@@ -6,3 +6,5 @@ cxx_compiler:  # [win]
 # 1.9.7 version is incompatible so we stay on 1.9.6 for now
 jsoncpp:
   - 1.9.6
+libxml2:
+  - 2.15.3
