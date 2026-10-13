@@ -1,4 +1,4 @@
-{% set version = "9.6.2" %}
+{% set version = "9.7.1" %}
 {% set qt_version = "6" %}
 
 {% set minor_version = ".".join(version.split(".")[:2]) %}
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://www.vtk.org/files/release/{{ minor_version }}/VTK-{{ version }}.tar.gz
-  sha256: aed12cec12a9609179bf66329070266627ca64244a10856a452b2a17ffb04a1d
+  sha256: cae04fd355004cb916a409db79d53a208f1221e975aeacc7540ee67b148ee91a
   patches:
     - patches/fix-threads-windows.patch  # [win]
     - patches/expat_implib.patch         # [win]
@@ -19,12 +19,11 @@ source:
     - patches/9987_try_except_python_import.patch  # [not win]
 
 build:
-  number: 2
+  number: 0
 
 requirements:
   build:
-    # Messes up the PBP graph gen.
-    # - {{ stdlib("c") }}
+    - {{ stdlib("c") }}
     - {{ compiler("cxx") }}
     - cmake
     - ninja-base
@@ -87,8 +86,7 @@ outputs:
 
     requirements:
       build:
-        # Messes up the PBP graph gen.
-        # - {{ stdlib("c") }}
+        - {{ stdlib("c") }}
         - {{ compiler("cxx") }}
         - cmake
         - ninja-base
@@ -175,6 +173,7 @@ outputs:
         - '*/libvtkCommonExecutionModel-*.dylib'  # [osx]
         - '*/libvtkCommonSystem-*.dylib'          # [osx]
         - '*/libvtkCommonCore-*.dylib'            # [osx]
+        - '*/libvtkCommonDataModel-*.dylib'       # [osx]
         - '*/libvtksys-*.dylib'                   # [osx]
         - '*/libvtkWrappingPythonCore*-*.dylib'   # [osx]
         - '*/libvtkIOMovie-*.so*'                 # [linux]
