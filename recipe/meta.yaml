@@ -12,7 +12,6 @@ source:
   sha256: cae04fd355004cb916a409db79d53a208f1221e975aeacc7540ee67b148ee91a
   patches:
     - patches/fix-threads-windows.patch  # [win]
-    - patches/expat_implib.patch         # [win]
     # https://github.com/conda-forge/vtk-feedstock/pull/282
     # https://gitlab.kitware.com/vtk/vtk/-/issues/18365#note_1079278
     # https://gitlab.kitware.com/vtk/vtk/-/merge_requests/9987
