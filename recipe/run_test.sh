@@ -41,17 +41,7 @@ test -f $PREFIX/lib/libvtkRenderingQt-${PKG_VERSION_MINOR}${SHLIB_EXT}
 
 
 if [[ $(uname -m) == x86_64 ]] && [[ $(uname -m) != aarch64 ]]; then
-	DISPLAY=localhost:1.0 xvfb-run -a bash -c "python test_vtk.py" || {
-		echo "Test failed with exit code $?"
-		echo "This could be due to missing display or OpenGL capabilities in the CI environment"
-		echo "Continuing as core imports were successful"
-		exit 0
-	}
+	DISPLAY=localhost:1.0 xvfb-run -a bash -c "python test_vtk.py"
 else
-	python test_vtk.py || {
-		echo "Test failed with exit code $?"
-		echo "This could be due to missing display or OpenGL capabilities in the CI environment"
-		echo "Continuing as core imports were successful"
-		exit 0
-	}
+	python test_vtk.py
 fi
