@@ -6,7 +6,7 @@ mkdir build
 cd build
 
 :: remove -GL from CXXFLAGS
-set "CXXFLAGS=-MD"
+set "CXXFLAGS=-MD -DJSONCPP_HAS_STRING_VIEW=1"
 
 set PYTHON_MAJOR_VERSION=%PY_VER:~0,1%
 

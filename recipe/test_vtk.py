@@ -167,7 +167,18 @@ except Exception as e:
 # This must run in CI as well: it exercises the expat XML reader that used to
 # require the expat_implib.patch on Windows.
 reader = vtk.vtkXMLUnstructuredGridReader()
-reader.SetFileName(os.environ["RECIPE_DIR"] + "/tests/ref.vtu")
+here = os.path.dirname(os.path.abspath(__file__))
+recipe_dir = os.environ.get("RECIPE_DIR", "")
+candidates = [
+    os.path.join(here, "tests", "ref.vtu"),
+    os.path.join(recipe_dir, "tests", "ref.vtu"),
+    os.path.join(recipe_dir, "parent", "tests", "ref.vtu"),
+]
+ref = next((p for p in candidates if os.path.isfile(p)), None)
+assert ref is not None, f"ref.vtu not found, tried: {candidates}"
+
+reader = vtk.vtkXMLUnstructuredGridReader()
+reader.SetFileName(ref)
 reader.Update()
 points = reader.GetOutput().GetPoints()
 # this will be None with expat 2.6
