@@ -241,6 +241,7 @@ about:
     - vendored-exprtk-license.txt      # https://github.com/conda-forge/exprtk-feedstock/blob/main/license.txt
     - vendored-fmt-license.txt         # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/fmt/vtkfmt/LICENSE.rst
     - vendored-cgns-license.txt        # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/cgns/vtkcgns/license.txt
+    - vendored-scn-license.txt         # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/scn/vtkscn/LICENSE
     - vendored-ioss-license.txt        # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/ioss/vtkioss/COPYRIGHT
     - vendored-token-license.txt       # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/token/vtktoken/license.md
     - vendored-verdict-license.txt     # https://gitlab.kitware.com/vtk/vtk/-/blob/master/ThirdParty/verdict/vtkverdict/LICENSE
