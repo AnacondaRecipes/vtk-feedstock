@@ -3,3 +3,6 @@ build_parameters:
   - "--suppress-variables"
   # - "--error-overlinking" turning off for sake of qt's dependencies
 
+channels:
+  - https://staging.continuum.io/pbp/fs/pugixml-feedstock/pr3/5a095c7
+  - https://staging.continuum.io/pbp/fs/eigen-feedstock/pr7/d5a9859
