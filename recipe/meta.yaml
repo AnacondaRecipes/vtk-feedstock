@@ -51,7 +51,7 @@ requirements:
     - libtiff {{ libtiff }}
     - libxml2 {{ libxml2 }}
     - lz4-c {{ lz4_c }}
-    - nlohmann_json 3.11.2
+    - nlohmann_json 3.12.0
     - proj {{ proj }}
     - pugixml {{ pugixml }}
     - qtbase-devel {{ qt_version }}
@@ -61,7 +61,7 @@ requirements:
     # safe to use but generates *tons* of deprecation warnings that (may) hint
     # at subtle breaks.
     # v2022.0.0 breaks things.
-    - tbb-devel 2021.8.0
+    - tbb-devel 2023.0.0
     - utfcpp 3.2.1
     - xz {{ xz }}
     - zlib {{ zlib }}
@@ -109,7 +109,7 @@ outputs:
         - libtiff {{ libtiff }}
         - libxml2 {{ libxml2 }}
         - lz4-c {{ lz4_c }}
-        - nlohmann_json 3.11.2
+        - nlohmann_json 3.12.0
         - proj {{ proj }}
         - pugixml {{ pugixml }}
         - qtbase-devel {{ qt_version }}
@@ -119,7 +119,7 @@ outputs:
         # safe to use but generates *tons* of deprecation warnings that (may) hint
         # at subtle breaks.
         # v2022.0.0 breaks things.
-        - tbb-devel 2021.8.0
+        - tbb-devel 2023.0.0
         - utfcpp 3.2.1
         - xz {{ xz }}
         - zlib {{ zlib }}
