@@ -2,4 +2,6 @@
 build_parameters:
   - "--suppress-variables"
   # - "--error-overlinking" turning off for sake of qt's dependencies
-  
+
+channels:
+  - https://staging.continuum.io/pbp/fs/libnetcdf-feedstock/pr21/fc4c9d9
