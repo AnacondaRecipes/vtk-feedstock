@@ -2,3 +2,5 @@
 build_parameters:
   - "--suppress-variables"
   # - "--error-overlinking" turning off for sake of qt's dependencies
+
+task_timeout: 54000
